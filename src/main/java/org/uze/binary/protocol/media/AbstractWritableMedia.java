@@ -180,7 +180,7 @@ public abstract class AbstractWritableMedia implements WritableMedia {
             ((Printable) value).print(this);
         } else {
             final Class<T> clazz = (Class<T>) value.getClass();
-            final ExternalPrinter<? super T> printer = resolve(clazz);//todo - why?
+            final ExternalPrinter<T> printer = resolve(clazz);
             if (printer == null) {
                 throw new IOException("Unable to print class: " + clazz.getName());
             }

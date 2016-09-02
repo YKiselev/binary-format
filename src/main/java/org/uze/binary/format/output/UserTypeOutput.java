@@ -14,33 +14,17 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.media;
+package org.uze.binary.format.output;
+
+import org.uze.binary.format.api.WritableMedia;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 /**
- * Created by Y.Kiselev on 26.06.2016.
+ * Created by Y.Kiselev on 02.09.2016.
  */
-public abstract class AbstractOutputStreamMedia extends AbstractWritableMedia {
+public interface UserTypeOutput {
 
-    private final OutputStream os;
-
-    public AbstractOutputStreamMedia(OutputStream os) {
-        this.os = os;
-    }
-
-    /**
-     * Puts one byte in output stream
-     *
-     * @param value the byte value to store
-     */
-    protected void put(int value) throws IOException {
-        this.os.write(value);
-    }
-
-    protected void putBytes(byte[] data, int offset, int length) throws IOException {
-        this.os.write(data, offset, length);
-    }
+    <T> void put(WritableMedia media, T value) throws IOException;
 
 }

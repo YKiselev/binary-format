@@ -20,7 +20,8 @@ import org.junit.Test;
 import org.uze.binary.format.api.MediaResource;
 import org.uze.binary.format.api.ReadableMedia;
 import org.uze.binary.format.api.Types;
-import org.uze.binary.format.media.AbstractInputStreamMedia;
+import org.uze.binary.format.media.InputStreamBinaryInput;
+import org.uze.binary.format.media.SimpleReadableMedia;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,14 +36,12 @@ import static org.junit.Assert.assertEquals;
 public class AbstractInputStreamMediaTest {
 
     private ReadableMedia media(byte[] data) {
-        return new AbstractInputStreamMedia(
-                new ByteArrayInputStream(data)
-        ) {
-            @Override
-            protected <T> MediaResource<T> resolve(Class<T> clazz) {
-                throw new UnsupportedOperationException("not implemented");
-            }
-        };
+        return new SimpleReadableMedia(
+                new InputStreamBinaryInput(
+                        new ByteArrayInputStream(data)
+                ),
+                null
+        );
     }
 
     private static byte array(byte itemType) {
@@ -188,7 +187,7 @@ public class AbstractInputStreamMediaTest {
 
     @Test
     public void shouldReadObject() throws Exception {
-        final ReadableMedia media = new AbstractInputStreamMedia(
+        final ReadableMedia media = new InputStreamBinaryInput(
                 new ByteArrayInputStream(
                         new byte[]{
                                 array(Types.USER_TYPE),
@@ -216,7 +215,7 @@ public class AbstractInputStreamMediaTest {
 
     @Test
     public void shouldReadObjectArray() throws Exception {
-        final ReadableMedia media = new AbstractInputStreamMedia(
+        final ReadableMedia media = new InputStreamBinaryInput(
                 new ByteArrayInputStream(
                         new byte[]{
                                 Types.USER_TYPE,

@@ -20,6 +20,8 @@ import org.uze.binary.format.api.ExternalPrinter;
 import org.uze.binary.format.api.Printable;
 import org.uze.binary.format.api.Types;
 import org.uze.binary.format.api.WritableMedia;
+import org.uze.binary.format.output.BinaryOutput;
+import org.uze.binary.format.output.UserTypeOutput;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -27,13 +29,24 @@ import java.nio.charset.Charset;
 /**
  * Created by Y.Kiselev on 01.09.2016.
  */
-public abstract class AbstractWritableMedia implements WritableMedia {
+public final class SimpleWritableMedia implements WritableMedia {
 
-    protected abstract void put(int value) throws IOException;
+    private final BinaryOutput out;
 
-    protected abstract void putBytes(byte[] data, int offset, int length) throws IOException;
+    private final UserTypeOutput userTypeOutput;
 
-    protected abstract <T> ExternalPrinter<T> resolve(Class<T> clazz);
+    public SimpleWritableMedia(BinaryOutput out, UserTypeOutput userTypeOutput) {
+        this.out = out;
+        this.userTypeOutput = userTypeOutput;
+    }
+
+    private void put(int value) throws IOException {
+        this.out.put(value);
+    }
+
+    private void put(byte[] data, int offset, int length) throws IOException {
+        this.out.put(data, offset, length);
+    }
 
     private void putNull() throws IOException {
         putType(Types.NULL);
@@ -82,6 +95,23 @@ public abstract class AbstractWritableMedia implements WritableMedia {
         }
     }
 
+    private void putInt16(int value) throws IOException {
+        put(value & 0xff);
+        put((value >>> 8) & 0xff);
+    }
+
+    private void putInt32(int value) throws IOException {
+        put(value & 0xff);
+        put((value >>> 8) & 0xff);
+        put((value >>> 16) & 0xff);
+        put((value >>> 24) & 0xff);
+    }
+
+    private void putInt64(long value) throws IOException {
+        putInt32((int) value);
+        putInt32((int) (value >>> 32));
+    }
+
     @Override
     public void putString(String value) throws IOException {
         if (value == null) {
@@ -93,7 +123,7 @@ public abstract class AbstractWritableMedia implements WritableMedia {
             } else {
                 final byte[] bytes = value.getBytes(Charset.forName("UTF-8"));
                 putLength(bytes.length);
-                putBytes(bytes, 0, bytes.length);
+                put(bytes, 0, bytes.length);
             }
         }
     }
@@ -110,7 +140,7 @@ public abstract class AbstractWritableMedia implements WritableMedia {
             putByte((byte) value);
         } else {
             putType(Types.CHAR);
-            putInt16((short) value);
+            putInt16(value);
         }
     }
 
@@ -119,26 +149,9 @@ public abstract class AbstractWritableMedia implements WritableMedia {
         if (value > Byte.MIN_VALUE && value <= Byte.MAX_VALUE) {
             putByte((byte) value);
         } else {
-            putType(Types.SHORT);
-            putInt16(value);
+            put(Types.SHORT);
+            put(value);
         }
-    }
-
-    private void putInt16(short value) throws IOException {
-        put(value & 0xff);
-        put((value >>> 8) & 0xff);
-    }
-
-    private void putInt32(int value) throws IOException {
-        put(value & 0xff);
-        put((value >>> 8) & 0xff);
-        put((value >>> 16) & 0xff);
-        put((value >>> 24) & 0xff);
-    }
-
-    private void putInt64(long value) throws IOException {
-        putInt32((int) value);
-        putInt32((int) (value >>> 32));
     }
 
     @Override
@@ -176,15 +189,18 @@ public abstract class AbstractWritableMedia implements WritableMedia {
     private <T> void putValue(T value) throws IOException {
         if (value == null) {
             putNull();
-        } else if (value instanceof Printable) {
-            ((Printable) value).print(this);
         } else {
-            final Class<T> clazz = (Class<T>) value.getClass();
-            final ExternalPrinter<T> printer = resolve(clazz);
-            if (printer == null) {
-                throw new IOException("Unable to print class: " + clazz.getName());
-            }
-            printer.print(value, this);
+            this.userTypeOutput.put(this, value);
+//            if (value instanceof Printable) {
+//                ((Printable) value).print(this);
+//            } else {
+//                final Class<T> clazz = (Class<T>) value.getClass();
+//                final ExternalPrinter<T> printer = resolve(clazz);
+//                if (printer == null) {
+//                    throw new IOException("Unable to print class: " + clazz.getName());
+//                }
+//                printer.print(value, this);
+//            }
         }
     }
 
@@ -205,7 +221,7 @@ public abstract class AbstractWritableMedia implements WritableMedia {
         } else {
             putType(Types.ARRAY, Types.BYTE);
             putLength(value.length);
-            putBytes(value, 0, value.length);
+            put(value, 0, value.length);
         }
     }
 

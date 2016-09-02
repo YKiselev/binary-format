@@ -80,11 +80,17 @@ public final class Types {
     /**
      * TYPE(1b)
      */
-    public static final byte NULL = 14;
+    public static final byte NULL = 10;
 
     /**
-     * TYPE(1b), VALUE(n)
+     * TYPE(1b), 0..N * (TYPE(1b), VALUE(f(type))), END_MARKER
      */
-    public static final byte USER_TYPE = 15;
+    public static final byte USER_TYPE = 11;
+
+    /**
+     * TYPE(1b)
+     */
+    public static final byte END_MARKER = 12;
+
 
 }

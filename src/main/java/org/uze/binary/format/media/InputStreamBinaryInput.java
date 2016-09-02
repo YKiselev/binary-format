@@ -16,22 +16,24 @@
 
 package org.uze.binary.format.media;
 
+import org.uze.binary.format.input.BinaryInput;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * Created by Y.Kiselev on 26.06.2016.
  */
-public abstract class AbstractInputStreamMedia extends AbstractReadableMedia {
+public final class InputStreamBinaryInput implements BinaryInput {
 
     private final InputStream is;
 
-    public AbstractInputStreamMedia(InputStream is) {
+    public InputStreamBinaryInput(InputStream is) {
         this.is = is;
     }
 
     @Override
-    protected int read() throws IOException {
+    public int read() throws IOException {
         final int result = this.is.read();
         if (result == -1) {
             throw new IOException("Unexpected end of stream!");
@@ -40,7 +42,7 @@ public abstract class AbstractInputStreamMedia extends AbstractReadableMedia {
     }
 
     @Override
-    protected void read(byte[] buffer, int length) throws IOException {
+    public void read(byte[] buffer, int length) throws IOException {
         final int read = this.is.read(buffer, 0, length);
         if (read != length) {
             throw new IOException("Partial read: only " + read + " of " + length + " bytes!");

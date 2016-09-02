@@ -16,16 +16,13 @@
 
 package org.uze.binary.format;
 
-//import org.apache.commons.io.output.ByteArrayOutputStream;
-//import org.apache.commons.lang3.ArrayUtils;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
-import org.uze.binary.format.api.ExternalPrinter;
 import org.uze.binary.format.api.Printable;
 import org.uze.binary.format.api.Types;
 import org.uze.binary.format.api.WritableMedia;
-import org.uze.binary.format.media.AbstractOutputStreamMedia;
+import org.uze.binary.format.media.OutputStreamBinaryOutput;
+import org.uze.binary.format.media.SimpleWritableMedia;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,16 +32,11 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * Created by Y.Kiselev on 26.06.2016.
  */
-public class AbstractOutputStreamMediaTest {
+public class SimpleWritableMediaTest {
 
     private final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-    private final WritableMedia media = new AbstractOutputStreamMedia(bos) {
-        @Override
-        protected <T> ExternalPrinter<T> resolve(Class<T> clazz) {
-            throw new UnsupportedOperationException("not implemented");
-        }
-    };
+    private final WritableMedia media = new SimpleWritableMedia(new OutputStreamBinaryOutput(bos), null);
 
     private static byte type(int type, int subType) {
         return (byte) (type + (subType << 4));

@@ -16,31 +16,36 @@
 
 package org.uze.binary.format.media;
 
-import org.uze.binary.format.api.MediaResource;
 import org.uze.binary.format.api.ReadableMedia;
 import org.uze.binary.format.api.Types;
+import org.uze.binary.format.input.BinaryInput;
+import org.uze.binary.format.input.UserTypeInput;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 
 /**
- * To implement {@link ReadableMedia} create class extending this one and implement three methods:
- * <ol>
- *     <li>{@link AbstractReadableMedia#read()}</li>
- *     <li>{@link AbstractReadableMedia#read(byte[], int)}</li>
- *     <li>{@link AbstractReadableMedia#resolve(java.lang.Class)}</li>
- * </ol>
- *
  * Created by Y.Kiselev on 01.09.2016.
  */
-public abstract class AbstractReadableMedia implements ReadableMedia {
+public final class SimpleReadableMedia implements ReadableMedia {
 
-    protected abstract int read() throws IOException;
+    private final BinaryInput input;
 
-    protected abstract void read(byte[] buffer, int length) throws IOException;
+    private final UserTypeInput userTypeInput;
 
-    protected abstract <T> MediaResource<T> resolve(Class<T> clazz);
+    public SimpleReadableMedia(BinaryInput input, UserTypeInput userTypeInput) {
+        this.input = input;
+        this.userTypeInput = userTypeInput;
+    }
+
+    private int read() throws IOException {
+        return this.input.read();
+    }
+
+    private void read(byte[] buffer, int length) throws IOException {
+        this.input.read(buffer, length);
+    }
 
     /**
      * Reads packed positive integer (1-4 bytes)
@@ -215,21 +220,13 @@ public abstract class AbstractReadableMedia implements ReadableMedia {
         return Double.longBitsToDouble(readInt64());
     }
 
-    private <T> T readUserType(Class<T> clazz) throws IOException {
-        final MediaResource<T> resource = resolve(clazz);
-        if (resource == null) {
-            throw new IOException("There is no media resource for this class: " + clazz);
-        }
-        return resource.read(this);
-    }
-
     @Override
     public <T> T readObject(Class<T> clazz) throws IOException {
         final int type = read();
         if (type != Types.USER_TYPE) {
             throw new IOException("Not a user-type: " + type);
         }
-        return readUserType(clazz);
+        return this.userTypeInput.read(this, clazz);
     }
 
     private void ensureArray(int value, int expectedSubType) throws IOException {
@@ -320,14 +317,10 @@ public abstract class AbstractReadableMedia implements ReadableMedia {
     public <T> T[] readObjectArray(Class<T> itemType) throws IOException {
         ensureArray(read(), Types.USER_TYPE);
         final int length = readLength();
-        final MediaResource<T> resource = resolve(itemType);
-        if (resource == null) {
-            throw new IOException("There is no media resource for this class: " + itemType);
-        }
         @SuppressWarnings("unchecked")
         final T[] result = (T[]) Array.newInstance(itemType, length);
         for (int i = 0; i < length; i++) {
-            result[i] = resource.read(this);
+            result[i] = this.userTypeInput.read(this, itemType);
         }
         return result;
     }

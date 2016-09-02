@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uze.binary.protocol.media;
+package org.uze.binary.format.media;
 
 import java.io.IOException;
 import java.io.InputStream;

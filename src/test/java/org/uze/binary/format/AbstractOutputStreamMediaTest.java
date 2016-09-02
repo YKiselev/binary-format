@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.uze.binary.protocol;
+package org.uze.binary.format;
 
 //import org.apache.commons.io.output.ByteArrayOutputStream;
 //import org.apache.commons.lang3.ArrayUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
-import org.uze.binary.protocol.api.ExternalPrinter;
-import org.uze.binary.protocol.api.Printable;
-import org.uze.binary.protocol.api.Types;
-import org.uze.binary.protocol.api.WritableMedia;
-import org.uze.binary.protocol.media.AbstractOutputStreamMedia;
+import org.uze.binary.format.api.ExternalPrinter;
+import org.uze.binary.format.api.Printable;
+import org.uze.binary.format.api.Types;
+import org.uze.binary.format.api.WritableMedia;
+import org.uze.binary.format.media.AbstractOutputStreamMedia;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

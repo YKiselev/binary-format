@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 
-package org.uze.binary.protocol.api;
+package org.uze.binary.format.media;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * Implementors of this interface can print itself directly (without additional helper classes)
- *
  * Created by Y.Kiselev on 26.06.2016.
  */
-public interface Printable {
+public abstract class AbstractOutputStreamMedia extends AbstractWritableMedia {
 
-    void print(WritableMedia media) throws IOException;
+    private final OutputStream os;
+
+    public AbstractOutputStreamMedia(OutputStream os) {
+        this.os = os;
+    }
+
+    /**
+     * Puts one byte in output stream
+     *
+     * @param value the byte value to store
+     */
+    protected void put(int value) throws IOException {
+        this.os.write(value);
+    }
+
+    protected void putBytes(byte[] data, int offset, int length) throws IOException {
+        this.os.write(data, offset, length);
+    }
+
 }

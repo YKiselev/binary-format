@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.uze.binary.protocol.media;
+package org.uze.binary.format.media;
 
-import org.uze.binary.protocol.api.MediaResource;
-import org.uze.binary.protocol.api.ReadableMedia;
-import org.uze.binary.protocol.api.Types;
+import org.uze.binary.format.api.MediaResource;
+import org.uze.binary.format.api.ReadableMedia;
+import org.uze.binary.format.api.Types;
 
 import java.io.IOException;
 import java.lang.reflect.Array;

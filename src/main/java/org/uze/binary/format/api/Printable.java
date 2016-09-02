@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.uze.binary.protocol.api;
+package org.uze.binary.format.api;
 
 import java.io.IOException;
 
 /**
- * Implementers of this interface are used as helpers to print classes which do not implement {@link Printable}
+ * Implementors of this interface can print itself directly (without additional helper classes)
  *
- * Created by Y.Kiselev on 03.07.2016.
+ * Created by Y.Kiselev on 26.06.2016.
  */
-public interface ExternalPrinter<T> {
+public interface Printable {
 
-    void print(T object, WritableMedia media) throws IOException;
+    void print(WritableMedia media) throws IOException;
 }

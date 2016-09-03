@@ -60,7 +60,7 @@ byte[]{
 ```
 Where  
 `Types.USER_TYPE` - is a type marker, each field or type has one (see org.uze.binary.format.Types for details). In our case it tells us that there is a user type.  
-`Types.BYTE, 1` - is a first field `id` serialized with value 1. Field has type int but value if small enough to fit one byte so it was saved as byte. Library always tries to occupy as much as possible room for _single_ values. On a contrary array elements are always saved as-is (4 bytes for int, 2 bytes for short, etc).  
+`Types.BYTE, 1` - is a first field `id` serialized with value 1. Field has type int but value if small enough to fit to one byte so it was saved as byte. Library always tries to occupy as much as possible room for _single_ values. On a contrary array elements are always saved as-is (4 bytes for int, 2 bytes for short, etc).  
 `Types.STRING, 33,'S','o','m','e',...` - is a second field `description` serialized as UTF-8 with length of 33 **bytes**. Please note - for strings length is stored in bytes, not in characters!  
 `Types.END_MARKER` - is a user type end marker, this is added by library automatically upon completion of a call to `UserTypeOutput#put`.  
 One important note here is that if we try to put null value - `media.putObject(null)`, it will be handled by labrary without a call to `UserTypeOutput#put`. In this case an array of bytes would look like this:
@@ -69,6 +69,8 @@ byte[]{
         Types.NULL
 }
 ```
+In general each value is stored as a pair (type,data) where type is single byte and data is a type-dependent array of bytes.  
+Lengths of arrays and strings are stored using 7 lower bits of each byte, so if value fit 7 bits it will occupy one byte, if it fits 14 bits it will be two bytes and so on. This is because higher bit (8) is used as a marker "more data in next byte". For details see `org.uze.binary.format.media.SimpleWritableMedia.putLength`.
 
 Now to de-serialization (again for simplicity only one user type supported)
 ```java

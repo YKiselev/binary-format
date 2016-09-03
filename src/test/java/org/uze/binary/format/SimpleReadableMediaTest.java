@@ -18,9 +18,6 @@ package org.uze.binary.format;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.uze.binary.format.api.MediaResource;
-import org.uze.binary.format.api.ReadableMedia;
-import org.uze.binary.format.api.Types;
 import org.uze.binary.format.input.UserTypeInput;
 import org.uze.binary.format.media.InputStreamBinaryInput;
 import org.uze.binary.format.media.SimpleReadableMedia;
@@ -35,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Y.Kiselev on 29.06.2016.
  */
-public class AbstractInputStreamMediaTest {
+public class SimpleReadableMediaTest {
 
     private ReadableMedia media(byte[] data) {
         return new SimpleReadableMedia(
@@ -46,8 +43,7 @@ public class AbstractInputStreamMediaTest {
                     @Override
                     public <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException {
                         if (Entity.class.equals(clazz)) {
-                            final ReadableEntity readableEntity = new ReadableEntity();
-                            return clazz.cast(readableEntity.read(media));
+                            return clazz.cast(new Entity(media.readInt(), media.readString()));
                         }
                         throw new UnsupportedOperationException("Unknown class:" + clazz);
                     }
@@ -260,13 +256,5 @@ final class Entity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
-    }
-}
-
-final class ReadableEntity implements MediaResource<Entity> {
-
-    @Override
-    public Entity read(ReadableMedia media) throws IOException {
-        return new Entity(media.readInt(), media.readString());
     }
 }

@@ -16,10 +16,8 @@
 
 package org.uze.binary.format.media;
 
-import org.uze.binary.format.api.ExternalPrinter;
-import org.uze.binary.format.api.Printable;
-import org.uze.binary.format.api.Types;
-import org.uze.binary.format.api.WritableMedia;
+import org.uze.binary.format.Types;
+import org.uze.binary.format.WritableMedia;
 import org.uze.binary.format.output.BinaryOutput;
 import org.uze.binary.format.output.UserTypeOutput;
 

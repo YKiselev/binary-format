@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.api;
+package org.uze.binary.format;
 
 import java.io.IOException;
 

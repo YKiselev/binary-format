@@ -18,9 +18,6 @@ package org.uze.binary.format;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
-import org.uze.binary.format.api.Printable;
-import org.uze.binary.format.api.Types;
-import org.uze.binary.format.api.WritableMedia;
 import org.uze.binary.format.media.OutputStreamBinaryOutput;
 import org.uze.binary.format.media.SimpleWritableMedia;
 import org.uze.binary.format.output.UserTypeOutput;
@@ -42,8 +39,8 @@ public class SimpleWritableMediaTest {
             new UserTypeOutput() {
                 @Override
                 public <T> void put(WritableMedia media, T value) throws IOException {
-                    if (value instanceof Printable) {
-                        ((Printable) value).print(media);
+                    if (value instanceof Item) {
+                        ((Item) value).print(media);
                     } else {
                         throw new UnsupportedOperationException("Unsupported value: " + value);
                     }
@@ -269,7 +266,7 @@ public class SimpleWritableMediaTest {
     }
 }
 
-class Item implements Printable {
+class Item {
 
     private final byte b;
 
@@ -295,7 +292,6 @@ class Item implements Printable {
         this.d = d;
     }
 
-    @Override
     public void print(WritableMedia writableMedia) throws IOException {
         writableMedia.putByte(this.b);
         writableMedia.putShort(this.s);

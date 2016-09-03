@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.api;
+package org.uze.binary.format;
 
 /**
  * Each serialized property is stored as a pair of <b>header</b> and <b>data</b>.<br/>

@@ -16,7 +16,7 @@
 
 package org.uze.binary.format.output;
 
-import org.uze.binary.format.api.WritableMedia;
+import org.uze.binary.format.WritableMedia;
 
 import java.io.IOException;
 

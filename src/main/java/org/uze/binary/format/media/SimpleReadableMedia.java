@@ -16,8 +16,8 @@
 
 package org.uze.binary.format.media;
 
-import org.uze.binary.format.api.ReadableMedia;
-import org.uze.binary.format.api.Types;
+import org.uze.binary.format.ReadableMedia;
+import org.uze.binary.format.Types;
 import org.uze.binary.format.input.BinaryInput;
 import org.uze.binary.format.input.UserTypeInput;
 

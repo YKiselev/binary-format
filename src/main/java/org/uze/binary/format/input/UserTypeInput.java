@@ -17,7 +17,7 @@
 package org.uze.binary.format.input;
 
 import org.jetbrains.annotations.NotNull;
-import org.uze.binary.format.api.ReadableMedia;
+import org.uze.binary.format.ReadableMedia;
 
 import java.io.IOException;
 

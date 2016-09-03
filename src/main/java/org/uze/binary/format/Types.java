@@ -17,7 +17,7 @@
 package org.uze.binary.format;
 
 /**
- * Each serialized property is stored as a pair of <b>header</b> and <b>data</b>.<br/>
+ * Each serialized property is stored as a pair of <b>header</b> and <b>data</b>.
  * Where <b>header</b> has size of one byte and <b>data</b> can vary from zero to N bytes.
  * Header consist of two parts - lower four bits encode property <b>type</b> (see below)
  * and higher four bits encode <b>element type</b> for arrays.

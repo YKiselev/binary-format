@@ -1,6 +1,6 @@
 ## Synopsis
 
-This is a small library defining simple binary format for Java class serialization/deserialization. Out of the box primitive types (and arrays of primitive types) are supported, custom user class support can be added by plugging in serialization providers. To tailor different needs one can use custom user-type-to-serializer mapping modes - for example, using integer userId, string className or without storing type information at all (this may be useful in cases when type of serialized instance always matches corresponding field type). 
+This is a small library defining simple binary format for Java class serialization/deserialization. Out of the box primitive types (and arrays of primitive types) are supported, custom user class support can be added by plugging in serialization providers. To tailor different needs one can use custom user-type-to-de-serializer mapping modes - for example, storing integer as _userId_, String _className_ or without type information at all (this may be useful in cases when type of serialized instance always matches corresponding field type). 
 
 ## Code Example
 
@@ -47,7 +47,7 @@ public final class Item {
     }
 }
 ```
-Here we just put class fields one-by-one to the media, because in next example we know the target type of object to de-serialzie. In real life we often need to put some type id or even class name to media to be able to de-serialize it later. But this is up to you to decide what strategy fits best, same as decision about how to actually serialize object - by providing some method in target class itself (Item@print) of by some external helper class (perhaps ExternalItemPrinter#print). 
+Here we just put class fields one-by-one to the media, because in next example we know the target type of object to de-serialize. In real life we often need to put some type id or even class name to media to be able to de-serialize it later. But this is up to you to decide what strategy fits best, same as decision about how to actually serialize object - by providing some method in target class itself (Item@print) of by some external helper class (perhaps ExternalItemPrinter#print). 
 
 Binary array, returned by `bos.toByteArray()` in example above now looks like this:
 ```java

@@ -226,7 +226,16 @@ public final class SimpleReadableMedia implements ReadableMedia {
         if (type != Types.USER_TYPE) {
             throw new IOException("Not a user-type: " + type);
         }
-        return this.userTypeInput.read(this, clazz);
+        return readObjectValue(clazz);
+    }
+
+    private <T> T readObjectValue(Class<T> clazz) throws IOException {
+        final T result = this.userTypeInput.read(this, clazz);
+        final int endMarker = read();
+        if (endMarker != Types.END_MARKER) {
+            throw new IOException("Expected end marker: " + endMarker);
+        }
+        return result;
     }
 
     private void ensureArray(int value, int expectedSubType) throws IOException {
@@ -320,7 +329,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
         @SuppressWarnings("unchecked")
         final T[] result = (T[]) Array.newInstance(itemType, length);
         for (int i = 0; i < length; i++) {
-            result[i] = this.userTypeInput.read(this, itemType);
+            result[i] = readObjectValue(itemType);
         }
         return result;
     }

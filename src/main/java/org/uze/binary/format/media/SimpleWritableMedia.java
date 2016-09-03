@@ -149,8 +149,8 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value > Byte.MIN_VALUE && value <= Byte.MAX_VALUE) {
             putByte((byte) value);
         } else {
-            put(Types.SHORT);
-            put(value);
+            putType(Types.SHORT);
+            putInt16(value);
         }
     }
 
@@ -191,6 +191,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             putNull();
         } else {
             this.userTypeOutput.put(this, value);
+            putType(Types.END_MARKER);
 //            if (value instanceof Printable) {
 //                ((Printable) value).print(this);
 //            } else {

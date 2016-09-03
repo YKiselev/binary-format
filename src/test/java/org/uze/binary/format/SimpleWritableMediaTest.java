@@ -23,6 +23,7 @@ import org.uze.binary.format.api.Types;
 import org.uze.binary.format.api.WritableMedia;
 import org.uze.binary.format.media.OutputStreamBinaryOutput;
 import org.uze.binary.format.media.SimpleWritableMedia;
+import org.uze.binary.format.output.UserTypeOutput;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +37,19 @@ public class SimpleWritableMediaTest {
 
     private final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-    private final WritableMedia media = new SimpleWritableMedia(new OutputStreamBinaryOutput(bos), null);
+    private final WritableMedia media = new SimpleWritableMedia(
+            new OutputStreamBinaryOutput(bos),
+            new UserTypeOutput() {
+                @Override
+                public <T> void put(WritableMedia media, T value) throws IOException {
+                    if (value instanceof Printable) {
+                        ((Printable) value).print(media);
+                    } else {
+                        throw new UnsupportedOperationException("Unsupported value: " + value);
+                    }
+                }
+            }
+    );
 
     private static byte type(int type, int subType) {
         return (byte) (type + (subType << 4));
@@ -113,6 +126,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 5, 'a', 'l', 'p', 'h', 'a',
                         Types.FLOAT, -61, -11, 72, 64,
                         Types.DOUBLE, 31, -123, -21, 81, -72, 30, 9, 64,
+                        Types.END_MARKER,
                         Types.NULL,
                         Types.BYTE, -1,
                         Types.BYTE, -2,
@@ -120,7 +134,8 @@ public class SimpleWritableMediaTest {
                         Types.BYTE, -4,
                         Types.STRING, 8, -48, -79, -48, -75, -47, -126, -48, -80,
                         Types.FLOAT, 1, 27, 55, 74,
-                        Types.DOUBLE, -10, 8, 0, 46, 89, 118, 81, 66
+                        Types.DOUBLE, -10, 8, 0, 46, 89, 118, 81, 66,
+                        Types.END_MARKER
 
                 },
                 bos.toByteArray()
@@ -247,6 +262,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 4, 'n', 'a', 'm', 'e',
                         Types.FLOAT, 0, 0, -128, 63,
                         Types.DOUBLE, 0, 0, 0, 0, 0, 0, 0, 64,
+                        Types.END_MARKER
                 },
                 this.bos.toByteArray()
         );
@@ -269,7 +285,7 @@ class Item implements Printable {
 
     private final double d;
 
-    public Item(byte b, short s, int id, long l, String name, float f, double d) {
+    Item(byte b, short s, int id, long l, String name, float f, double d) {
         this.b = b;
         this.s = s;
         this.id = id;

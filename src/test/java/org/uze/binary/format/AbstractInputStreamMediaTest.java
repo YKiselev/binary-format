@@ -16,10 +16,12 @@
 
 package org.uze.binary.format;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.uze.binary.format.api.MediaResource;
 import org.uze.binary.format.api.ReadableMedia;
 import org.uze.binary.format.api.Types;
+import org.uze.binary.format.input.UserTypeInput;
 import org.uze.binary.format.media.InputStreamBinaryInput;
 import org.uze.binary.format.media.SimpleReadableMedia;
 
@@ -40,7 +42,16 @@ public class AbstractInputStreamMediaTest {
                 new InputStreamBinaryInput(
                         new ByteArrayInputStream(data)
                 ),
-                null
+                new UserTypeInput() {
+                    @Override
+                    public <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException {
+                        if (Entity.class.equals(clazz)) {
+                            final ReadableEntity readableEntity = new ReadableEntity();
+                            return clazz.cast(readableEntity.read(media));
+                        }
+                        throw new UnsupportedOperationException("Unknown class:" + clazz);
+                    }
+                }
         );
     }
 
@@ -187,23 +198,18 @@ public class AbstractInputStreamMediaTest {
 
     @Test
     public void shouldReadObject() throws Exception {
-        final ReadableMedia media = new InputStreamBinaryInput(
-                new ByteArrayInputStream(
-                        new byte[]{
-                                array(Types.USER_TYPE),
-                                2,
-                                Types.BYTE, 1,
-                                Types.STRING, 5, 'f', 'i', 'r', 's', 't',
-                                Types.BYTE, 2,
-                                Types.STRING, 6, 's', 'e', 'c', 'o', 'n', 'd'
-                        }
-                )
-        ) {
-            @Override
-            protected <T> MediaResource<T> resolve(Class<T> clazz) {
-                return (MediaResource<T>) new ReadableEntity();
-            }
-        };
+        final ReadableMedia media = media(
+                new byte[]{
+                        array(Types.USER_TYPE),
+                        2,
+                        Types.BYTE, 1,
+                        Types.STRING, 5, 'f', 'i', 'r', 's', 't',
+                        Types.END_MARKER,
+                        Types.BYTE, 2,
+                        Types.STRING, 6, 's', 'e', 'c', 'o', 'n', 'd',
+                        Types.END_MARKER
+                }
+        );
         assertArrayEquals(
                 new Entity[]{
                         new Entity(1, "first"),
@@ -215,20 +221,14 @@ public class AbstractInputStreamMediaTest {
 
     @Test
     public void shouldReadObjectArray() throws Exception {
-        final ReadableMedia media = new InputStreamBinaryInput(
-                new ByteArrayInputStream(
-                        new byte[]{
-                                Types.USER_TYPE,
-                                Types.BYTE, 1,
-                                Types.STRING, 5, 'f', 'i', 'r', 's', 't'
-                        }
-                )
-        ) {
-            @Override
-            protected <T> MediaResource<T> resolve(Class<T> clazz) {
-                return (MediaResource<T>) new ReadableEntity();
-            }
-        };
+        final ReadableMedia media = media(
+                new byte[]{
+                        Types.USER_TYPE,
+                        Types.BYTE, 1,
+                        Types.STRING, 5, 'f', 'i', 'r', 's', 't',
+                        Types.END_MARKER
+                }
+        );
         assertEquals(
                 new Entity(1, "first"),
                 media.readObject(Entity.class)
@@ -243,7 +243,7 @@ final class Entity {
 
     private final String name;
 
-    public Entity(int id, String name) {
+    Entity(int id, String name) {
         this.id = id;
         this.name = name;
     }

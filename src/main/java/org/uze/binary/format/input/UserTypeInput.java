@@ -16,6 +16,7 @@
 
 package org.uze.binary.format.input;
 
+import org.jetbrains.annotations.NotNull;
 import org.uze.binary.format.api.ReadableMedia;
 
 import java.io.IOException;
@@ -25,5 +26,5 @@ import java.io.IOException;
  */
 public interface UserTypeInput {
 
-    <T> T read(ReadableMedia media, Class<T> clazz) throws IOException;
+    <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException;
 }

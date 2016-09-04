@@ -190,16 +190,6 @@ public final class SimpleWritableMedia implements WritableMedia {
         } else {
             this.userTypeOutput.put(this, value);
             putType(Types.END_MARKER);
-//            if (value instanceof Printable) {
-//                ((Printable) value).print(this);
-//            } else {
-//                final Class<T> clazz = (Class<T>) value.getClass();
-//                final ExternalPrinter<T> printer = resolve(clazz);
-//                if (printer == null) {
-//                    throw new IOException("Unable to print class: " + clazz.getName());
-//                }
-//                printer.print(value, this);
-//            }
         }
     }
 

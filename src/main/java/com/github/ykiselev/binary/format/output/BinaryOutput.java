@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.output;
+package com.github.ykiselev.binary.format.output;
 
 import java.io.IOException;
 
@@ -29,18 +29,18 @@ public interface BinaryOutput {
      * Writes one byte to the output
      *
      * @param value the byte to write (lower 8 bits)
-     * @throws IOException if error occurred
+     * @throws IOException if I/O error occurred
      */
-    void put(int value) throws IOException;
+    void write(int value) throws IOException;
 
     /**
      * Writes specified number of bytes to the output
      *
      * @param data the array to read bytes from
      * @param offset the offset in supplied array to start reading from
-     * @param length the number of bytes to read
-     * @throws IOException if error occurred (for example - if number of actually written bytes is not equal to {@code length})
+     * @param length the number of bytes to read (exactly)
+     * @throws IOException if I/O error occurred (for example - if number of actually written bytes is not equal to {@code length})
      */
-    void put(byte[] data, int offset, int length) throws IOException;
+    void write(byte[] data, int offset, int length) throws IOException;
 
 }

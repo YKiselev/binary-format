@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.input;
+package com.github.ykiselev.binary.format.output;
 
 import java.io.IOException;
 
 /**
- * Created by Y.Kiselev on 03.09.2016.
+ * Created by Y.Kiselev on 06.09.2016.
  */
-public interface BinaryInput {
+public interface PrimitiveBinaryOutput extends BinaryOutput {
 
-    int read() throws IOException;
+    void writeLength(int length) throws IOException;
 
-    void read(byte[] buffer, int length) throws IOException;
+    void writeInt16(int value) throws IOException;
 
+    void writeInt32(int value) throws IOException;
+
+    void writeInt64(long value) throws IOException;
+
+    void writeFloat(float value) throws IOException;
+
+    void writeDouble(double value) throws IOException;
 }

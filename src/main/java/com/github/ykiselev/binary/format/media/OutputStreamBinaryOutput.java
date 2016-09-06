@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.media;
+package com.github.ykiselev.binary.format.media;
 
-import org.uze.binary.format.output.BinaryOutput;
+import com.github.ykiselev.binary.format.output.BinaryOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +33,7 @@ public final class OutputStreamBinaryOutput implements BinaryOutput {
     }
 
     @Override
-    public void put(byte[] data, int offset, int length) throws IOException {
+    public void write(byte[] data, int offset, int length) throws IOException {
         this.os.write(data, offset, length);
     }
 
@@ -43,7 +43,7 @@ public final class OutputStreamBinaryOutput implements BinaryOutput {
      * @param value the byte value to store
      */
     @Override
-    public void put(int value) throws IOException {
+    public void write(int value) throws IOException {
         this.os.write(value);
     }
 

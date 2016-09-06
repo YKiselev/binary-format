@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.input;
-
-import org.jetbrains.annotations.NotNull;
-import org.uze.binary.format.ReadableMedia;
+package com.github.ykiselev.binary.format.input;
 
 import java.io.IOException;
 
 /**
  * Created by Y.Kiselev on 03.09.2016.
  */
-public interface UserTypeInput {
+public interface BinaryInput {
 
-    <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException;
+    /**
+     * Reads one byte from underlying storage
+     *
+     * @return the next byte from storage (in range 0..255)
+     * @throws IOException if an I/O error occurs
+     */
+    int read() throws IOException;
+
+    /**
+     * Reads {@code length} bytes from underlying storage
+     *
+     * @param buffer the buffer to copy bytes to
+     * @param length number of bytes to read (exactly)
+     * @throws IOException if an I/O error occurs
+     */
+    void read(byte[] buffer, int length) throws IOException;
+
 }

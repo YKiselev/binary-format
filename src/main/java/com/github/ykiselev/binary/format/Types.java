@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format;
+package com.github.ykiselev.binary.format;
 
 /**
  * Each serialized property is stored as a pair of <b>header</b> and <b>data</b>.
@@ -92,5 +92,24 @@ public final class Types {
      */
     public static final byte END_MARKER = 12;
 
+    /**
+     * Checks if supplied type is an array
+     *
+     * @param value the type byte
+     * @return true if this is array, false otherwise
+     */
+    public static boolean isArray(int value) {
+        return ((value & Types.MASK) == Types.ARRAY);
+    }
+
+    /**
+     * Extracts sub type (higher four bits) from type byte
+     *
+     * @param value the type byte
+     * @return the sub type
+     */
+    public static int subType(int value) {
+        return ((value >>> 4) & Types.MASK);
+    }
 
 }

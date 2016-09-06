@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format;
+package com.github.ykiselev.binary.format;
 
 import java.io.IOException;
 
@@ -57,4 +57,11 @@ public interface ReadableMedia {
 
     <T> T[] readObjectArray(Class<T> itemType) throws IOException;
 
+    /**
+     * Reads the rest of object data till <i>end marker</i>
+     *
+     * @return the rest of object (this may be empty array)
+     * @throws IOException if reading error occurred (like end of stream, etc)
+     */
+    byte[] readRest() throws IOException;
 }

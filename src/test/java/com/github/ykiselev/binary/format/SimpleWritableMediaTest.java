@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format;
+package com.github.ykiselev.binary.format;
 
+import com.github.ykiselev.binary.format.media.OutputStreamBinaryOutput;
+import com.github.ykiselev.binary.format.media.SimpleWritableMedia;
+import com.github.ykiselev.binary.format.output.DefaultPrimitiveBinaryOutput;
+import com.github.ykiselev.binary.format.output.UserTypeOutput;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
-import org.uze.binary.format.media.OutputStreamBinaryOutput;
-import org.uze.binary.format.media.SimpleWritableMedia;
-import org.uze.binary.format.output.UserTypeOutput;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +36,9 @@ public class SimpleWritableMediaTest {
     private final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
     private final WritableMedia media = new SimpleWritableMedia(
-            new OutputStreamBinaryOutput(bos),
+            new DefaultPrimitiveBinaryOutput(
+                    new OutputStreamBinaryOutput(bos)
+            ),
             new UserTypeOutput() {
                 @Override
                 public <T> void put(WritableMedia media, T value) throws IOException {
@@ -54,7 +57,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintByte() throws Exception {
-        this.media.putByte((byte) 127);
+        this.media.writeByte((byte) 127);
         assertArrayEquals(new byte[]{
                 Types.BYTE, 127
         }, this.bos.toByteArray());
@@ -62,7 +65,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintChar() throws Exception {
-        this.media.putChar((char) 0xfff);
+        this.media.writeChar((char) 0xfff);
         assertArrayEquals(new byte[]{
                 Types.CHAR, (byte) 0xff, 0x0f
         }, this.bos.toByteArray());
@@ -70,7 +73,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintShort() throws Exception {
-        this.media.putShort((short) 0xfff);
+        this.media.writeShort((short) 0xfff);
         assertArrayEquals(new byte[]{
                 Types.SHORT, (byte) 0xff, 0x0f
         }, this.bos.toByteArray());
@@ -78,7 +81,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintInt() throws Exception {
-        this.media.putInt(0xfffff);
+        this.media.writeInt(0xfffff);
         assertArrayEquals(new byte[]{
                 Types.INT, -1, -1, 15, 0
         }, this.bos.toByteArray());
@@ -86,7 +89,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintLong() throws Exception {
-        this.media.putLong(0xfffffffffL);
+        this.media.writeLong(0xfffffffffL);
         assertArrayEquals(new byte[]{
                 Types.LONG, -1, -1, -1, -1, 15, 0, 0, 0
         }, this.bos.toByteArray());
@@ -94,7 +97,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintString() throws Exception {
-        this.media.putString("Превед, Медвежуть!");
+        this.media.writeString("Превед, Медвежуть!");
         assertArrayEquals(new byte[]{
                 Types.STRING, 33,
                 -48, -97, -47, -128, -48, -75, -48, -78, -48, -75,
@@ -111,7 +114,7 @@ public class SimpleWritableMediaTest {
                 null,
                 new Item((byte) -1, (short) -2, -3, -4, "бета", 3000000.14f, 300000000000.14)
         };
-        this.media.putObjectArray(src);
+        this.media.writeObjectArray(src);
         assertArrayEquals(
                 new byte[]{
                         type(Types.ARRAY, Types.USER_TYPE),
@@ -142,7 +145,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintBytes() throws Exception {
         final byte[] src = {1, 2, 3, 4, 5, 6, 7, 8, 9, 100, Byte.MIN_VALUE, Byte.MAX_VALUE};
-        this.media.putByteArray(src);
+        this.media.writeByteArray(src);
         final byte[] header = new byte[]{
                 type(Types.ARRAY, Types.BYTE),
                 12
@@ -153,7 +156,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintChars() throws Exception {
         final char[] src = {'A', 'B', 'C', Character.MIN_VALUE, Character.MAX_VALUE};
-        this.media.putCharArray(src);
+        this.media.writeCharArray(src);
         final byte[] expected = new byte[]{
                 type(Types.ARRAY, Types.CHAR),
                 5,
@@ -169,7 +172,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintShorts() throws Exception {
         final short[] src = {1, 2, 3, Short.MIN_VALUE, Short.MAX_VALUE};
-        this.media.putShortArray(src);
+        this.media.writeShortArray(src);
         final byte[] expected = new byte[]{
                 type(Types.ARRAY, Types.SHORT),
                 5,
@@ -185,7 +188,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintInts() throws Exception {
         final int[] src = {1, 2, 3, Integer.MIN_VALUE, Integer.MAX_VALUE};
-        this.media.putIntArray(src);
+        this.media.writeIntArray(src);
         final byte[] expected = new byte[]{
                 type(Types.ARRAY, Types.INT),
                 5,
@@ -201,7 +204,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintLongs() throws Exception {
         final long[] src = {1, 2, 3, Long.MIN_VALUE, Long.MAX_VALUE};
-        this.media.putLongArray(src);
+        this.media.writeLongArray(src);
         final byte[] expected = new byte[]{
                 type(Types.ARRAY, Types.LONG),
                 5,
@@ -217,7 +220,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintFloats() throws Exception {
         final float[] src = {1f, 2f, 3f, Float.MIN_VALUE, Float.MAX_VALUE};
-        this.media.putFloatArray(src);
+        this.media.writeFloatArray(src);
         final byte[] expected = new byte[]{
                 type(Types.ARRAY, Types.FLOAT),
                 5,
@@ -233,7 +236,7 @@ public class SimpleWritableMediaTest {
     @Test
     public void shouldPrintDouble() throws Exception {
         final double[] src = {1f, 2f, 3f, Double.MIN_VALUE, Double.MAX_VALUE};
-        this.media.putDoubleArray(src);
+        this.media.writeDoubleArray(src);
         final byte[] expected = new byte[]{
                 type(Types.ARRAY, Types.DOUBLE),
                 5,
@@ -248,7 +251,7 @@ public class SimpleWritableMediaTest {
 
     @Test
     public void shouldPrintObject() throws Exception {
-        this.media.putObject(new Item(Byte.MAX_VALUE, Short.MAX_VALUE, 1, 2L, "name", 1f, 2.0));
+        this.media.writeObject(new Item(Byte.MAX_VALUE, Short.MAX_VALUE, 1, 2L, "name", 1f, 2.0));
         assertArrayEquals(
                 new byte[]{
                         Types.USER_TYPE,
@@ -293,12 +296,12 @@ class Item {
     }
 
     public void print(WritableMedia writableMedia) throws IOException {
-        writableMedia.putByte(this.b);
-        writableMedia.putShort(this.s);
-        writableMedia.putInt(this.id);
-        writableMedia.putLong(this.l);
-        writableMedia.putString(this.name);
-        writableMedia.putFloat(this.f);
-        writableMedia.putDouble(this.d);
+        writableMedia.writeByte(this.b);
+        writableMedia.writeShort(this.s);
+        writableMedia.writeInt(this.id);
+        writableMedia.writeLong(this.l);
+        writableMedia.writeString(this.name);
+        writableMedia.writeFloat(this.f);
+        writableMedia.writeDouble(this.d);
     }
 }

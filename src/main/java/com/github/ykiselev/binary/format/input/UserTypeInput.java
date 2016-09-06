@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.output;
+package com.github.ykiselev.binary.format.input;
 
-import org.uze.binary.format.WritableMedia;
+import com.github.ykiselev.binary.format.ReadableMedia;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 /**
- * Created by Y.Kiselev on 02.09.2016.
+ * Created by Y.Kiselev on 03.09.2016.
  */
-public interface UserTypeOutput {
+public interface UserTypeInput {
 
-    <T> void put(WritableMedia media, T value) throws IOException;
-
+    <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException;
 }

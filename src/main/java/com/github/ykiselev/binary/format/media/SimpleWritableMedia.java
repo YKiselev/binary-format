@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.uze.binary.format.media;
+package com.github.ykiselev.binary.format.media;
 
-import org.uze.binary.format.Types;
-import org.uze.binary.format.WritableMedia;
-import org.uze.binary.format.output.BinaryOutput;
-import org.uze.binary.format.output.UserTypeOutput;
+import com.github.ykiselev.binary.format.Types;
+import com.github.ykiselev.binary.format.WritableMedia;
+import com.github.ykiselev.binary.format.output.PrimitiveBinaryOutput;
+import com.github.ykiselev.binary.format.output.UserTypeOutput;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -29,21 +29,13 @@ import java.nio.charset.Charset;
  */
 public final class SimpleWritableMedia implements WritableMedia {
 
-    private final BinaryOutput out;
+    private final PrimitiveBinaryOutput out;
 
     private final UserTypeOutput userTypeOutput;
 
-    public SimpleWritableMedia(BinaryOutput out, UserTypeOutput userTypeOutput) {
+    public SimpleWritableMedia(PrimitiveBinaryOutput out, UserTypeOutput userTypeOutput) {
         this.out = out;
         this.userTypeOutput = userTypeOutput;
-    }
-
-    private void put(int value) throws IOException {
-        this.out.put(value);
-    }
-
-    private void put(byte[] data, int offset, int length) throws IOException {
-        this.out.put(data, offset, length);
     }
 
     private void putNull() throws IOException {
@@ -63,125 +55,81 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (st != subType) {
             throw new IllegalArgumentException("Type in subtype value: " + subType);
         }
-        put(t + (subType << 4));
-    }
-
-    /**
-     * Store packed <b>positive</b> integer.
-     * <p>
-     * Stores value as 1-4 bytes depending on magnitude
-     *
-     * @param length the value to store. Must be positive.
-     */
-    private void putLength(int length) throws IOException {
-        if (length < 0) {
-            throw new IllegalArgumentException("Length must be positive: " + length);
-        }
-        int l = length;
-        put(l & 0xff);
-        l >>>= 7;
-        if (l != 0) {
-            put(l & 0xff);
-            l >>>= 7;
-            if (l != 0) {
-                put(l & 0xff);
-                l >>>= 7;
-                if (l != 0) {
-                    put(l & 0xff);
-                }
-            }
-        }
-    }
-
-    private void putInt16(int value) throws IOException {
-        put(value & 0xff);
-        put((value >>> 8) & 0xff);
-    }
-
-    private void putInt32(int value) throws IOException {
-        put(value & 0xff);
-        put((value >>> 8) & 0xff);
-        put((value >>> 16) & 0xff);
-        put((value >>> 24) & 0xff);
-    }
-
-    private void putInt64(long value) throws IOException {
-        putInt32((int) value);
-        putInt32((int) (value >>> 32));
+        this.out.write(t + (subType << 4));
     }
 
     @Override
-    public void putString(String value) throws IOException {
+    public void writeString(String value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.STRING);
             if (value.length() == 0) {
-                putLength(0);
+                this.out.writeLength(0);
             } else {
                 final byte[] bytes = value.getBytes(Charset.forName("UTF-8"));
-                putLength(bytes.length);
-                put(bytes, 0, bytes.length);
+                this.out.writeLength(bytes.length);
+                this.out.write(bytes, 0, bytes.length);
             }
         }
     }
 
     @Override
-    public void putByte(byte value) throws IOException {
+    public void writeByte(byte value) throws IOException {
         putType(Types.BYTE);
-        put(value);
+        this.out.write(value);
     }
 
     @Override
-    public void putChar(char value) throws IOException {
+    public void writeChar(char value) throws IOException {
         if (value <= Byte.MAX_VALUE) {
-            putByte((byte) value);
+            writeByte((byte) value);
         } else {
             putType(Types.CHAR);
-            putInt16(value);
+            this.out.writeInt16(value);
         }
     }
 
     @Override
-    public void putShort(short value) throws IOException {
+    public void writeShort(short value) throws IOException {
         if (value > Byte.MIN_VALUE && value <= Byte.MAX_VALUE) {
-            putByte((byte) value);
+            writeByte((byte) value);
         } else {
             putType(Types.SHORT);
-            putInt16(value);
+            this.out.writeInt16(value);
         }
     }
 
     @Override
-    public void putInt(int value) throws IOException {
+    public void writeInt(int value) throws IOException {
         if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE) {
-            putShort((short) value);
+            writeShort((short) value);
         } else {
             putType(Types.INT);
-            putInt32(value);
+            this.out.writeInt32(value);
         }
     }
 
     @Override
-    public void putLong(long value) throws IOException {
+    public void writeLong(long value) throws IOException {
         if (value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE) {
-            putInt((int) value);
+            writeInt((int) value);
         } else {
             putType(Types.LONG);
-            putInt64(value);
+            this.out.writeInt64(value);
         }
     }
 
     @Override
-    public void putFloat(float value) throws IOException {
+    public void writeFloat(float value) throws IOException {
         putType(Types.FLOAT);
-        putInt32(Float.floatToRawIntBits(value));
+        this.out.writeFloat(value);
     }
 
     @Override
-    public void putDouble(double value) throws IOException {
+    public void writeDouble(double value) throws IOException {
         putType(Types.DOUBLE);
-        putInt64(Double.doubleToRawLongBits(value));
+        this.out.writeDouble(value);
     }
 
     private <T> void putValue(T value) throws IOException {
@@ -194,7 +142,7 @@ public final class SimpleWritableMedia implements WritableMedia {
     }
 
     @Override
-    public <T> void putObject(T value) throws IOException {
+    public <T> void writeObject(T value) throws IOException {
         if (value == null) {
             putNull();
         } else {
@@ -204,104 +152,109 @@ public final class SimpleWritableMedia implements WritableMedia {
     }
 
     @Override
-    public void putByteArray(byte[] value) throws IOException {
+    public void writeByteArray(byte[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.BYTE);
-            putLength(value.length);
-            put(value, 0, value.length);
+            this.out.writeLength(value.length);
+            this.out.write(value, 0, value.length);
         }
     }
 
     @Override
-    public void putCharArray(char[] value) throws IOException {
+    public void writeCharArray(char[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.CHAR);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (char s : value) {
-                putInt16((short) s);
+                this.out.writeInt16((short) s);
             }
         }
     }
 
     @Override
-    public void putShortArray(short[] value) throws IOException {
+    public void writeShortArray(short[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.SHORT);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (short s : value) {
-                putInt16(s);
+                this.out.writeInt16(s);
             }
         }
     }
 
     @Override
-    public void putIntArray(int[] value) throws IOException {
+    public void writeIntArray(int[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.INT);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (int i : value) {
-                putInt32(i);
+                this.out.writeInt32(i);
             }
         }
     }
 
     @Override
-    public void putLongArray(long[] value) throws IOException {
+    public void writeLongArray(long[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.LONG);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (long l : value) {
-                putInt64(l);
+                this.out.writeInt64(l);
             }
         }
     }
 
     @Override
-    public void putFloatArray(float[] value) throws IOException {
+    public void writeFloatArray(float[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.FLOAT);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (float f : value) {
-                putInt32(Float.floatToRawIntBits(f));
+                this.out.writeFloat(f);
             }
         }
     }
 
     @Override
-    public void putDoubleArray(double[] value) throws IOException {
+    public void writeDoubleArray(double[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.DOUBLE);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (double d : value) {
-                putInt64(Double.doubleToRawLongBits(d));
+                this.out.writeDouble(d);
             }
         }
     }
 
     @Override
-    public <T> void putObjectArray(T[] value) throws IOException {
+    public <T> void writeObjectArray(T[] value) throws IOException {
         if (value == null) {
             putNull();
         } else {
             putType(Types.ARRAY, Types.USER_TYPE);
-            putLength(value.length);
+            this.out.writeLength(value.length);
             for (T item : value) {
                 putValue(item);
             }
         }
+    }
+
+    @Override
+    public void writeRest(byte[] blob) throws IOException {
+        throw new UnsupportedOperationException("not implemented");
     }
 }

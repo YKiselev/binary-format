@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.output;
-
-import java.io.IOException;
+package com.github.ykiselev.binary.format.media;
 
 /**
- * Created by Y.Kiselev on 06.09.2016.
+ * Created by Y.Kiselev on 07.09.2016.
  */
-public interface PrimitiveBinaryOutput extends BinaryOutput {
+public interface ArrayFactory {
 
-    void writeLength(int length) throws IOException;
-
-    void writeInt16(int value) throws IOException;
-
-    void writeInt32(int value) throws IOException;
-
-    void writeInt64(long value) throws IOException;
-
-    void writeFloat(float value) throws IOException;
-
-    void writeDouble(double value) throws IOException;
+    byte[] get(int capacity);
 }

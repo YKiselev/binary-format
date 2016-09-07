@@ -18,7 +18,6 @@ package com.github.ykiselev.binary.format;
 
 import com.github.ykiselev.binary.format.media.OutputStreamBinaryOutput;
 import com.github.ykiselev.binary.format.media.SimpleWritableMedia;
-import com.github.ykiselev.binary.format.output.DefaultPrimitiveBinaryOutput;
 import com.github.ykiselev.binary.format.output.UserTypeOutput;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
@@ -36,9 +35,7 @@ public class SimpleWritableMediaTest {
     private final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
     private final WritableMedia media = new SimpleWritableMedia(
-            new DefaultPrimitiveBinaryOutput(
-                    new OutputStreamBinaryOutput(bos)
-            ),
+            new OutputStreamBinaryOutput(bos),
             new UserTypeOutput() {
                 @Override
                 public <T> void put(WritableMedia media, T value) throws IOException {
@@ -295,13 +292,13 @@ class Item {
         this.d = d;
     }
 
-    public void print(WritableMedia writableMedia) throws IOException {
-        writableMedia.writeByte(this.b);
-        writableMedia.writeShort(this.s);
-        writableMedia.writeInt(this.id);
-        writableMedia.writeLong(this.l);
-        writableMedia.writeString(this.name);
-        writableMedia.writeFloat(this.f);
-        writableMedia.writeDouble(this.d);
+    public void print(WritableMedia media) throws IOException {
+        media.writeByte(this.b);
+        media.writeShort(this.s);
+        media.writeInt(this.id);
+        media.writeLong(this.l);
+        media.writeString(this.name);
+        media.writeFloat(this.f);
+        media.writeDouble(this.d);
     }
 }

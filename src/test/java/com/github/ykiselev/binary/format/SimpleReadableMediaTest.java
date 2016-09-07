@@ -16,12 +16,11 @@
 
 package com.github.ykiselev.binary.format;
 
+import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.media.InputStreamBinaryInput;
 import com.github.ykiselev.binary.format.media.SimpleReadableMedia;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import com.github.ykiselev.binary.format.input.DefaultPrimitiveBinaryInput;
-import com.github.ykiselev.binary.format.input.UserTypeInput;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,10 +36,8 @@ public class SimpleReadableMediaTest {
 
     private ReadableMedia media(byte[] data) {
         return new SimpleReadableMedia(
-                new DefaultPrimitiveBinaryInput(
-                        new InputStreamBinaryInput(
-                                new ByteArrayInputStream(data)
-                        )
+                new InputStreamBinaryInput(
+                        new ByteArrayInputStream(data)
                 ),
                 new UserTypeInput() {
                     @Override

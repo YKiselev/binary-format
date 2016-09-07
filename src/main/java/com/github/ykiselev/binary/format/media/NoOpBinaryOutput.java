@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.input;
+package com.github.ykiselev.binary.format.media;
+
+import com.github.ykiselev.binary.format.output.BinaryOutput;
 
 import java.io.IOException;
 
 /**
- * Created by Y.Kiselev on 05.09.2016.
+ * Created by Y.Kiselev on 07.09.2016.
  */
-public interface PrimitiveBinaryInput extends BinaryInput {
+public final class NoOpBinaryOutput implements BinaryOutput {
 
-    int readLength() throws IOException;
+    public static final BinaryOutput INSTANCE = new NoOpBinaryOutput();
 
-    short readInt16() throws IOException;
+    @Override
+    public void write(int value) throws IOException {
+    }
 
-    int readInt32() throws IOException;
-
-    long readInt64() throws IOException;
-
-    float readFloat() throws IOException;
-
-    double readDouble() throws IOException;
+    @Override
+    public void write(byte[] data, int offset, int length) throws IOException {
+    }
 }

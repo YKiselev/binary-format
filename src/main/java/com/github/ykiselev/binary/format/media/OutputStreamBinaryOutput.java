@@ -28,6 +28,10 @@ public final class OutputStreamBinaryOutput implements BinaryOutput {
 
     private final OutputStream os;
 
+    public OutputStream os() {
+        return os;
+    }
+
     public OutputStreamBinaryOutput(OutputStream os) {
         this.os = os;
     }

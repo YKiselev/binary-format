@@ -18,8 +18,8 @@ package com.github.ykiselev.binary.format;
 
 import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.media.InputStreamBinaryInput;
+import com.github.ykiselev.binary.format.media.SimpleArrayFactory;
 import com.github.ykiselev.binary.format.media.SimpleReadableMedia;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -41,13 +41,14 @@ public class SimpleReadableMediaTest {
                 ),
                 new UserTypeInput() {
                     @Override
-                    public <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException {
+                    public <T> T read(ReadableMedia media, Class<T> clazz) throws IOException {
                         if (Entity.class.equals(clazz)) {
                             return clazz.cast(new Entity(media.readInt(), media.readString()));
                         }
                         throw new UnsupportedOperationException("Unknown class:" + clazz);
                     }
-                }
+                },
+                new SimpleArrayFactory(16)
         );
     }
 
@@ -231,6 +232,46 @@ public class SimpleReadableMediaTest {
         );
     }
 
+    @Test
+    public void shouldReadTheRest() throws Exception {
+        final ReadableMedia media = media(
+                new byte[]{
+                        Types.BYTE, 1,
+                        Types.CHAR, 'x', 0,
+                        Types.SHORT, 33, 33,
+                        Types.INT, 1, 2, 3, 4,
+                        Types.LONG, 1, 2, 3, 4, 5, 6, 7, 8,
+                        Types.FLOAT, 4, 3, 2, 1,
+                        Types.DOUBLE, 1, 1, 1, 1, 2, 2, 2, 2,
+                        Types.STRING, 3, 'a', 'b', 'c',
+                        array(Types.USER_TYPE), 1,
+                        Types.USER_TYPE,
+                        Types.BYTE, 127,
+                        Types.STRING, 3, 'x', 'y', 'z',
+                        Types.END_MARKER,
+                        Types.END_MARKER
+                }
+        );
+        assertArrayEquals(
+                new byte[]{
+                        Types.BYTE, 1,
+                        Types.CHAR, 'x', 0,
+                        Types.SHORT, 33, 33,
+                        Types.INT, 1, 2, 3, 4,
+                        Types.LONG, 1, 2, 3, 4, 5, 6, 7, 8,
+                        Types.FLOAT, 4, 3, 2, 1,
+                        Types.DOUBLE, 1, 1, 1, 1, 2, 2, 2, 2,
+                        Types.STRING, 3, 'a', 'b', 'c',
+                        array(Types.USER_TYPE), 1,
+                        Types.USER_TYPE,
+                        Types.BYTE, 127,
+                        Types.STRING, 3, 'x', 'y', 'z',
+                        Types.END_MARKER,
+                        Types.END_MARKER
+                },
+                media.readRest()
+        );
+    }
 }
 
 final class Entity {

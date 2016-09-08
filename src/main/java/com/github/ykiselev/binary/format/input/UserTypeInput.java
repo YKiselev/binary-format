@@ -17,7 +17,6 @@
 package com.github.ykiselev.binary.format.input;
 
 import com.github.ykiselev.binary.format.ReadableMedia;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -26,5 +25,12 @@ import java.io.IOException;
  */
 public interface UserTypeInput {
 
-    <T> T read(@NotNull ReadableMedia media, Class<T> clazz) throws IOException;
+    /**
+     * @param media the media to read user type from
+     * @param clazz the class of user type or {@code null} if other mechanism used to distinguish types (for example - user type id)
+     * @param <T> the user type
+     * @return the de-serialized instance of user type
+     * @throws IOException if I/O error occurred
+     */
+    <T> T read(ReadableMedia media, Class<T> clazz) throws IOException;
 }

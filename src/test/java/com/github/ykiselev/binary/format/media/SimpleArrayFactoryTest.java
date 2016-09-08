@@ -16,16 +16,29 @@
 
 package com.github.ykiselev.binary.format.media;
 
-/**
- * Created by Y.Kiselev on 07.09.2016.
- */
-public interface ArrayFactory {
+import org.junit.Assert;
+import org.junit.Test;
 
-    /**
-     * Provides array of bytes with required capacity. Actual length of returned array may be greater than {@code capacity}
-     *
-     * @param capacity the required size of array
-     * @return the byte array with length >= {@code capacity}
-     */
-    byte[] get(int capacity);
+/**
+ * @author Yuriy Kiselev uze@yandex.ru
+ */
+public final class SimpleArrayFactoryTest {
+
+    private final ArrayFactory factory = new SimpleArrayFactory(16);
+
+    @Test
+    public void shouldAllocate16bytes() throws Exception {
+        Assert.assertEquals(16, factory.get(0).length);
+    }
+
+    @Test
+    public void shouldReUseSameArrayInstance() throws Exception {
+        Assert.assertSame(factory.get(5), factory.get(15));
+    }
+
+    @Test
+    public void shouldAllocate32bytes() throws Exception {
+        Assert.assertEquals(32, factory.get(17).length);
+    }
+
 }

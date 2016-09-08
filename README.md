@@ -86,7 +86,8 @@ Now to de-serialization (again for simplicity only one user type supported)
                         }
                         throw new UnsupportedOperationException("Unknown class:" + clazz);
                     }
-                }
+                },
+                new SimpleArrayFactory(16)
         );
         
         Item result = media.getObject(Item.class);
@@ -104,7 +105,7 @@ Project uses maven, so usual `mvn clean install` should be enough.
 
 ## API Reference
 
-TBD
+See the [Javadoc][javadoc] catalog for complete API reference.
 
 ## Tests
 
@@ -118,6 +119,9 @@ or run specific test:
 
 Please e-mail me if you need more info or want to improve something: uze@yandex.ru
 
+## Downloads
+
+Download [the lates jar][dl] or
 
 ## License
 

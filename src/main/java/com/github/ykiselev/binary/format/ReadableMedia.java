@@ -16,6 +16,8 @@
 
 package com.github.ykiselev.binary.format;
 
+import com.github.ykiselev.binary.format.input.UserTypeInput;
+
 import java.io.IOException;
 
 /**
@@ -58,7 +60,9 @@ public interface ReadableMedia {
     <T> T[] readObjectArray(Class<T> itemType) throws IOException;
 
     /**
-     * Reads the rest of object data till <i>end marker</i>
+     * Reads the rest of object data till <i>end marker</i>.
+     * This method may only be called from {@link UserTypeInput} i.e. after <i>user type marker</i> is extracted from input.
+     * This method is designed to support different versions of object binaries.
      *
      * @return the rest of object (this may be empty array)
      * @throws IOException if reading error occurred (like end of stream, etc)

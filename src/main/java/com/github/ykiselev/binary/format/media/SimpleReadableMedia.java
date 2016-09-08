@@ -22,11 +22,15 @@ import com.github.ykiselev.binary.format.input.BinaryInput;
 import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.output.BinaryOutput;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 
 /**
+ * Simple implementation of {@link ReadableMedia} interface.
+ * This class is not thread safe.
+ * <p>
  * Created by Y.Kiselev on 01.09.2016.
  */
 public final class SimpleReadableMedia implements ReadableMedia {
@@ -37,9 +41,12 @@ public final class SimpleReadableMedia implements ReadableMedia {
 
     private final UserTypeInput userTypeInput;
 
-    public SimpleReadableMedia(BinaryInput input, UserTypeInput userTypeInput) {
+    private final ArrayFactory arrayFactory;
+
+    public SimpleReadableMedia(BinaryInput input, UserTypeInput userTypeInput, ArrayFactory arrayFactory) {
         this.input = input;
         this.userTypeInput = userTypeInput;
+        this.arrayFactory = arrayFactory;
     }
 
     private int read() throws IOException {
@@ -360,7 +367,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
      * @return the type of entry - one of {@link Types} constants
      * @throws IOException if I/O error occurred
      */
-    public int scan(BinaryOutput output, ArrayFactory arrayFactory) throws IOException {
+    private int scan(BinaryOutput output, ArrayFactory arrayFactory) throws IOException {
         final int type = read();
         output.write(type);
         switch (type) {
@@ -428,9 +435,22 @@ public final class SimpleReadableMedia implements ReadableMedia {
 
     @Override
     public byte[] readRest() throws IOException {
-        byte[] result = null;
-        //todo
-        return result;
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final OutputStreamBinaryOutput output = new OutputStreamBinaryOutput(os);
+        int depth = 1;
+        int type;
+        for (; ; ) {
+            type = scan(output, this.arrayFactory);
+            if (type == Types.USER_TYPE) {
+                depth++;
+            } else if (type == Types.END_MARKER) {
+                depth--;
+                if (depth <= 0) {
+                    break;
+                }
+            }
+        }
+        return os.toByteArray();
     }
 
 }

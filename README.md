@@ -129,4 +129,4 @@ This library is licensed under the Apache License, Version 2.0.
 
 [dl]: https://search.maven.org/remote_content?g=com.github.ykiselev&a=binary-format&v=LATEST
 [snap]: https://oss.sonatype.org/content/repositories/snapshots/com/github/ykiselev/binary-format/
-[javadoc]: https://square.github.io/javapoet/1.x/javapoet/
+[javadoc]: https://ykiselev.github.io/binary-format/1.x/

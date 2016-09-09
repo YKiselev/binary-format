@@ -22,6 +22,17 @@
     <artifactId>binary-format</artifactId>
     <version>1.28-SNAPSHOT</version>
 
+    <name>binary-format</name>
+    <description>A simple binary format library</description>
+    <url>https://github.com/YKiselev/binary-format</url>
+
+    <developers>
+        <developer>
+            <name>Yuriy Kiselev</name>
+            <email>uze@yandex.ru</email>
+        </developer>
+    </developers>
+
     <scm>
         <connection>scm:git:https://github.com/YKiselev/binary-format.git</connection>
         <developerConnection>scm:git:git@github.com:YKiselev/binary-format.git</developerConnection>
@@ -115,6 +126,21 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>

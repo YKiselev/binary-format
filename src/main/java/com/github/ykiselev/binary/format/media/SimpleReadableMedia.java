@@ -22,7 +22,6 @@ import com.github.ykiselev.binary.format.input.BinaryInput;
 import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.output.BinaryOutput;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
@@ -41,12 +40,15 @@ public final class SimpleReadableMedia implements ReadableMedia {
 
     private final UserTypeInput userTypeInput;
 
-    private final ArrayFactory arrayFactory;
-
-    public SimpleReadableMedia(BinaryInput input, UserTypeInput userTypeInput, ArrayFactory arrayFactory) {
+    /**
+     * Main ctor
+     *
+     * @param input         the input to read from
+     * @param userTypeInput the input to read user types from
+     */
+    public SimpleReadableMedia(BinaryInput input, UserTypeInput userTypeInput) {
         this.input = input;
         this.userTypeInput = userTypeInput;
-        this.arrayFactory = arrayFactory;
     }
 
     private int read() throws IOException {
@@ -354,103 +356,120 @@ public final class SimpleReadableMedia implements ReadableMedia {
         return result;
     }
 
-    private void copy(BinaryOutput output, ArrayFactory arrayFactory, int bytes) throws IOException {
-        final byte[] buffer = arrayFactory.get(bytes);
-        read(buffer, bytes);
-        output.write(buffer, 0, bytes);
+    @Override
+    public void readRest(BinaryOutput output, ArrayFactory arrayFactory) throws IOException {
+        final Scanner scanner = new Scanner(output, arrayFactory);
+        while (scanner.depth() > 0) {
+            scanner.scan();
+        }
     }
 
     /**
-     * Reads single entry at current position
-     *
-     * @param output the output to dump entry bytes to
-     * @return the type of entry - one of {@link Types} constants
-     * @throws IOException if I/O error occurred
+     * User type scanner
      */
-    private int scan(BinaryOutput output, ArrayFactory arrayFactory) throws IOException {
-        final int type = read();
-        output.write(type);
-        switch (type) {
-            case Types.NULL:
-            case Types.USER_TYPE:
-            case Types.END_MARKER:
-                break;
+    private class Scanner {
 
-            case Types.STRING: {
-                final int length = readLength(output);
-                copy(output, arrayFactory, length);
-            }
-            break;
+        final BinaryOutput output;
 
-            case Types.BYTE:
-                output.write(read());
-                break;
+        final ArrayFactory arrayFactory;
 
-            case Types.CHAR:
-            case Types.SHORT:
-                output.write(read());
-                output.write(read());
-                break;
-
-            case Types.INT:
-            case Types.FLOAT:
-                copy(output, arrayFactory, 4);
-                break;
-
-            case Types.LONG:
-            case Types.DOUBLE:
-                copy(output, arrayFactory, 8);
-                break;
-
-            default:
-                if (Types.isArray(type)) {
-                    final int subType = Types.subType(type);
-                    final int length = readLength(output);
-                    switch (subType) {
-                        case Types.BYTE:
-                            copy(output, arrayFactory, length);
-                            break;
-
-                        case Types.CHAR:
-                        case Types.SHORT:
-                            copy(output, arrayFactory, 2 * length);
-                            break;
-
-                        case Types.INT:
-                        case Types.FLOAT:
-                            copy(output, arrayFactory, 4 * length);
-                            break;
-
-                        case Types.LONG:
-                        case Types.DOUBLE:
-                            copy(output, arrayFactory, 8 * length);
-                            break;
-                    }
-                } else {
-                    throw new IOException("Invalid type byte: " + type);
-                }
-        }
-        return type;
-    }
-
-    @Override
-    public byte[] readRest() throws IOException {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final OutputStreamBinaryOutput output = new OutputStreamBinaryOutput(os);
         int depth = 1;
-        int type;
-        for (; ; ) {
-            type = scan(output, this.arrayFactory);
-            if (type == Types.USER_TYPE) {
-                depth++;
-            } else if (type == Types.END_MARKER) {
-                depth--;
-                if (depth <= 0) {
+
+        int depth() {
+            return depth;
+        }
+
+        /**
+         * @param output       the output to dump entry bytes to
+         * @param arrayFactory the array factory to create temporary buffers
+         */
+        Scanner(BinaryOutput output, ArrayFactory arrayFactory) {
+            this.output = output;
+            this.arrayFactory = arrayFactory;
+        }
+
+        /**
+         * Reads single entry at current position
+         *
+         * @throws IOException if I/O error occurred
+         */
+        void scan() throws IOException {
+            final int type = read();
+            if (type == Types.END_MARKER) {
+                this.depth--;
+            }
+            if (this.depth <= 0) {
+                return;
+            }
+            output.write(type);
+            switch (type) {
+                case Types.NULL:
+                case Types.END_MARKER:
                     break;
-                }
+
+                case Types.USER_TYPE:
+                    this.depth++;
+                    break;
+
+                case Types.STRING:
+                    copy(readLength(output));
+                    break;
+
+                case Types.BYTE:
+                    output.write(read());
+                    break;
+
+                case Types.CHAR:
+                case Types.SHORT:
+                    output.write(read());
+                    output.write(read());
+                    break;
+
+                case Types.INT:
+                case Types.FLOAT:
+                    copy(4);
+                    break;
+
+                case Types.LONG:
+                case Types.DOUBLE:
+                    copy(8);
+                    break;
+
+                default:
+                    if (Types.isArray(type)) {
+                        final int subType = Types.subType(type);
+                        final int length = readLength(output);
+                        switch (subType) {
+                            case Types.BYTE:
+                                copy(length);
+                                break;
+
+                            case Types.CHAR:
+                            case Types.SHORT:
+                                copy(2 * length);
+                                break;
+
+                            case Types.INT:
+                            case Types.FLOAT:
+                                copy(4 * length);
+                                break;
+
+                            case Types.LONG:
+                            case Types.DOUBLE:
+                                copy(8 * length);
+                                break;
+                        }
+                    } else {
+                        throw new IOException("Invalid type byte: " + type);
+                    }
             }
         }
-        return os.toByteArray();
-    }
 
+        void copy(int bytes) throws IOException {
+            final byte[] buffer = arrayFactory.get(bytes);
+            read(buffer, bytes);
+            output.write(buffer, 0, bytes);
+        }
+
+    }
 }

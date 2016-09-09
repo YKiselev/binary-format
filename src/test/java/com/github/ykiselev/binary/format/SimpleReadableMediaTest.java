@@ -18,11 +18,13 @@ package com.github.ykiselev.binary.format;
 
 import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.media.InputStreamBinaryInput;
+import com.github.ykiselev.binary.format.media.OutputStreamBinaryOutput;
 import com.github.ykiselev.binary.format.media.SimpleArrayFactory;
 import com.github.ykiselev.binary.format.media.SimpleReadableMedia;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -47,8 +49,7 @@ public class SimpleReadableMediaTest {
                         }
                         throw new UnsupportedOperationException("Unknown class:" + clazz);
                     }
-                },
-                new SimpleArrayFactory(16)
+                }
         );
     }
 
@@ -266,11 +267,16 @@ public class SimpleReadableMediaTest {
                         Types.USER_TYPE,
                         Types.BYTE, 127,
                         Types.STRING, 3, 'x', 'y', 'z',
-                        Types.END_MARKER,
                         Types.END_MARKER
                 },
-                media.readRest()
+                readRest(media)
         );
+    }
+
+    private static byte[] readRest(ReadableMedia media) throws IOException {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        media.readRest(new OutputStreamBinaryOutput(os), new SimpleArrayFactory(16));
+        return os.toByteArray();
     }
 }
 

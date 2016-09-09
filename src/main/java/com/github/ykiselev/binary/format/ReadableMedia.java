@@ -17,6 +17,8 @@
 package com.github.ykiselev.binary.format;
 
 import com.github.ykiselev.binary.format.input.UserTypeInput;
+import com.github.ykiselev.binary.format.media.ArrayFactory;
+import com.github.ykiselev.binary.format.output.BinaryOutput;
 
 import java.io.IOException;
 
@@ -60,12 +62,13 @@ public interface ReadableMedia {
     <T> T[] readObjectArray(Class<T> itemType) throws IOException;
 
     /**
-     * Reads the rest of object data till <i>end marker</i>.
-     * This method may only be called from {@link UserTypeInput} i.e. after <i>user type marker</i> is extracted from input.
-     * This method is designed to support different versions of object binaries.
+     * Reads the rest of user object data till the <i>end marker</i>. Note: returned byte array not includes corresponding object's <i>end marker</i>.
+     * This method may only be called from {@link UserTypeInput#read(ReadableMedia, Class)} i.e. after <i>user type marker</i> is extracted from input.
+     * This method is designed to support multi-versioned object binaries.
      *
-     * @return the rest of object (this may be empty array)
-     * @throws IOException if reading error occurred (like end of stream, etc)
+     * @param output the output to write rest of object bytes to.
+     * @param arrayFactory the array factory for temporal buffers creation.
+     * @throws IOException if reading error occurred (like end of stream, etc).
      */
-    byte[] readRest() throws IOException;
+    void readRest(BinaryOutput output, ArrayFactory arrayFactory) throws IOException;
 }

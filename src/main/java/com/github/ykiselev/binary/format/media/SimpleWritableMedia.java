@@ -105,20 +105,20 @@ public final class SimpleWritableMedia implements WritableMedia {
     }
 
     private void writeType(byte type) throws IOException {
-        writeType(type, (byte) 0);
+        write(type);
     }
 
-    private void writeType(byte type, byte subType) throws IOException {
-        final int t = type & Types.MASK;
-        final int st = subType & Types.MASK;
-        if (t != type) {
-            throw new IllegalArgumentException("Subtype in type value: " + type);
-        }
-        if (st != subType) {
-            throw new IllegalArgumentException("Type in subtype value: " + subType);
-        }
-        this.out.write(t + (subType << 4));
-    }
+//    private void writeType(byte type, byte subType) throws IOException {
+//        final int t = type & Types.MASK;
+//        final int st = subType & Types.MASK;
+//        if (t != type) {
+//            throw new IllegalArgumentException("Subtype in type value: " + type);
+//        }
+//        if (st != subType) {
+//            throw new IllegalArgumentException("Type in subtype value: " + subType);
+//        }
+//        this.out.write(t + (subType << 4));
+//    }
 
     @Override
     public void writeString(String value) throws IOException {
@@ -218,7 +218,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.BYTE);
+            writeType(Types.array(Types.BYTE));
             writeLength(value.length);
             write(value, 0, value.length);
         }
@@ -229,7 +229,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.CHAR);
+            writeType(Types.array(Types.CHAR));
             writeLength(value.length);
             for (char s : value) {
                 writeInt16((short) s);
@@ -242,7 +242,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.SHORT);
+            writeType(Types.array(Types.SHORT));
             writeLength(value.length);
             for (short s : value) {
                 writeInt16(s);
@@ -255,7 +255,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.INT);
+            writeType(Types.array(Types.INT));
             writeLength(value.length);
             for (int i : value) {
                 writeInt32(i);
@@ -268,7 +268,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.LONG);
+            writeType(Types.array(Types.LONG));
             writeLength(value.length);
             for (long l : value) {
                 writeInt64(l);
@@ -281,7 +281,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.FLOAT);
+            writeType(Types.array(Types.FLOAT));
             writeLength(value.length);
             for (float f : value) {
                 writeFloat32(f);
@@ -294,7 +294,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.DOUBLE);
+            writeType(Types.array(Types.DOUBLE));
             writeLength(value.length);
             for (double d : value) {
                 writeFloat64(d);
@@ -307,7 +307,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            writeType(Types.ARRAY, Types.USER_TYPE);
+            writeType(Types.array(Types.USER_TYPE));
             writeLength(value.length);
             for (T item : value) {
                 writeValue(item);

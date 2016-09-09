@@ -112,4 +112,17 @@ public final class Types {
         return ((value >>> 4) & Types.MASK);
     }
 
+    /**
+     * Combines array type with item type in single byte
+     *
+     * @param itemType the type of array item
+     */
+    public static byte array(int itemType) {
+        final int it = itemType & Types.MASK;
+        if (it != itemType) {
+            throw new IllegalArgumentException("Bad item type: " + itemType);
+        }
+        return (byte) (Types.ARRAY + (itemType << 4));
+    }
+
 }

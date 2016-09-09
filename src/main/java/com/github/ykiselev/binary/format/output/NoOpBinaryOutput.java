@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.media;
+package com.github.ykiselev.binary.format.output;
+
+import java.io.IOException;
 
 /**
  * Created by Y.Kiselev on 07.09.2016.
  */
-public interface ArrayFactory {
+public final class NoOpBinaryOutput implements BinaryOutput {
 
-    /**
-     * Provides array of bytes with required capacity. Actual length of returned array may be greater than {@code capacity}
-     *
-     * @param capacity the required size of array
-     * @return the byte array with length >= {@code capacity}
-     */
-    byte[] get(int capacity);
+    public static final BinaryOutput INSTANCE = new NoOpBinaryOutput();
+
+    @Override
+    public void write(int value) throws IOException {
+    }
+
+    @Override
+    public void write(byte[] data, int offset, int length) throws IOException {
+    }
 }

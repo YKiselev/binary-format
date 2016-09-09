@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.media;
+package com.github.ykiselev.binary.format.buffers;
 
 /**
  * Array factory implementation which lazily creates byte array and tries to re-use it.

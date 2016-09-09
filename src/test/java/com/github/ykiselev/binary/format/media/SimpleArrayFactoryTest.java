@@ -16,6 +16,8 @@
 
 package com.github.ykiselev.binary.format.media;
 
+import com.github.ykiselev.binary.format.buffers.ArrayFactory;
+import com.github.ykiselev.binary.format.buffers.SimpleArrayFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

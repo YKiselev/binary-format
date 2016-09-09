@@ -16,8 +16,8 @@
 
 package com.github.ykiselev.binary.format;
 
+import com.github.ykiselev.binary.format.buffers.ArrayFactory;
 import com.github.ykiselev.binary.format.input.UserTypeInput;
-import com.github.ykiselev.binary.format.media.ArrayFactory;
 import com.github.ykiselev.binary.format.output.BinaryOutput;
 
 import java.io.IOException;

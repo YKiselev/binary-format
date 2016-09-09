@@ -18,9 +18,11 @@ package com.github.ykiselev.binary.format.media;
 
 import com.github.ykiselev.binary.format.ReadableMedia;
 import com.github.ykiselev.binary.format.Types;
+import com.github.ykiselev.binary.format.buffers.ArrayFactory;
 import com.github.ykiselev.binary.format.input.BinaryInput;
 import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.output.BinaryOutput;
+import com.github.ykiselev.binary.format.output.NoOpBinaryOutput;
 
 import java.io.IOException;
 import java.lang.reflect.Array;

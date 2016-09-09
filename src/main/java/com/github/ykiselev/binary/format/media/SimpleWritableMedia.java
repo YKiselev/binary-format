@@ -175,7 +175,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (value == null) {
             writeNull();
         } else {
-            this.userTypeOutput.put(this, value);
+            this.userTypeOutput.write(this, value);
             writeType(Types.END_MARKER);
         }
     }

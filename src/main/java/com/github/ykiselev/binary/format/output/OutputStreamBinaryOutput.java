@@ -14,24 +14,39 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.media;
-
-import com.github.ykiselev.binary.format.output.BinaryOutput;
+package com.github.ykiselev.binary.format.output;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * Created by Y.Kiselev on 07.09.2016.
+ * Created by Y.Kiselev on 26.06.2016.
  */
-public final class NoOpBinaryOutput implements BinaryOutput {
+public final class OutputStreamBinaryOutput implements BinaryOutput {
 
-    public static final BinaryOutput INSTANCE = new NoOpBinaryOutput();
+    private final OutputStream os;
 
-    @Override
-    public void write(int value) throws IOException {
+    public OutputStream os() {
+        return os;
+    }
+
+    public OutputStreamBinaryOutput(OutputStream os) {
+        this.os = os;
     }
 
     @Override
     public void write(byte[] data, int offset, int length) throws IOException {
+        this.os.write(data, offset, length);
     }
+
+    /**
+     * Puts one byte in output stream
+     *
+     * @param value the byte value to store
+     */
+    @Override
+    public void write(int value) throws IOException {
+        this.os.write(value);
+    }
+
 }

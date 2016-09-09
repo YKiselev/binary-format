@@ -17,9 +17,9 @@
 package com.github.ykiselev.binary.format;
 
 import com.github.ykiselev.binary.format.input.UserTypeInput;
-import com.github.ykiselev.binary.format.media.InputStreamBinaryInput;
-import com.github.ykiselev.binary.format.media.OutputStreamBinaryOutput;
-import com.github.ykiselev.binary.format.media.SimpleArrayFactory;
+import com.github.ykiselev.binary.format.input.InputStreamBinaryInput;
+import com.github.ykiselev.binary.format.output.OutputStreamBinaryOutput;
+import com.github.ykiselev.binary.format.buffers.SimpleArrayFactory;
 import com.github.ykiselev.binary.format.media.SimpleReadableMedia;
 import org.junit.Test;
 

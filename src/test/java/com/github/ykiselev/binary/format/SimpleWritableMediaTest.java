@@ -16,7 +16,7 @@
 
 package com.github.ykiselev.binary.format;
 
-import com.github.ykiselev.binary.format.media.OutputStreamBinaryOutput;
+import com.github.ykiselev.binary.format.output.OutputStreamBinaryOutput;
 import com.github.ykiselev.binary.format.media.SimpleWritableMedia;
 import com.github.ykiselev.binary.format.output.UserTypeOutput;
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,7 +38,7 @@ public class SimpleWritableMediaTest {
             new OutputStreamBinaryOutput(bos),
             new UserTypeOutput() {
                 @Override
-                public <T> void put(WritableMedia media, T value) throws IOException {
+                public <T> void write(WritableMedia media, T value) throws IOException {
                     if (value instanceof Item) {
                         ((Item) value).print(media);
                     } else {

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.output;
-
-import com.github.ykiselev.binary.format.WritableMedia;
-
-import java.io.IOException;
+package com.github.ykiselev.binary.format.buffers;
 
 /**
- * Created by Y.Kiselev on 02.09.2016.
+ * Created by Y.Kiselev on 07.09.2016.
  */
-public interface UserTypeOutput {
+public interface ArrayFactory {
 
-    <T> void write(WritableMedia media, T value) throws IOException;
-
+    /**
+     * Provides array of bytes with required capacity. Actual length of returned array may be greater than {@code capacity}
+     *
+     * @param capacity the required size of array
+     * @return the byte array with length >= {@code capacity}
+     */
+    byte[] get(int capacity);
 }

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.ykiselev.binary.format.media;
-
-import com.github.ykiselev.binary.format.input.BinaryInput;
+package com.github.ykiselev.binary.format.input;
 
 import java.io.IOException;
 import java.io.InputStream;

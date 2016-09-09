@@ -20,7 +20,7 @@
 
     <groupId>com.github.ykiselev</groupId>
     <artifactId>binary-format</artifactId>
-    <version>1.28-SNAPSHOT</version>
+    <version>1.29-SNAPSHOT</version>
 
     <name>binary-format</name>
     <description>A simple binary format library</description>

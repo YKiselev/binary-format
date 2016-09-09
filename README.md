@@ -63,7 +63,7 @@ Where
 `Types.BYTE, 1` - is a first field `id` serialized with value 1. Field has type int but value if small enough to fit to one byte so it was saved as byte. Library always tries to occupy as much as possible room for _single_ values. On a contrary array elements are always saved as-is (4 bytes for int, 2 bytes for short, etc).  
 `Types.STRING, 33,'S','o','m','e',...` - is a second field `description` serialized as UTF-8 with length of 33 **bytes**. Please note - for strings length is stored in bytes, not in characters!  
 `Types.END_MARKER` - is a user type end marker, this is added by library automatically upon completion of a call to `UserTypeOutput#put`.  
-One important note here is that if we try to put null value - `media.putObject(null)`, it will be handled by labrary without a call to `UserTypeOutput#put`. In this case an array of bytes would look like this:
+One important note here is that if we try to put null value - `media.putObject(null)`, it will be handled by library without a call to `UserTypeOutput#put`. In this case an array of bytes would look like this:
 ```java
 byte[]{
         Types.NULL

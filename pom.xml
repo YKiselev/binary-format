@@ -20,13 +20,13 @@
 
     <groupId>com.github.ykiselev</groupId>
     <artifactId>binary-format</artifactId>
-    <version>1.27-SNAPSHOT</version>
+    <version>1.27</version>
 
     <scm>
         <connection>scm:git:https://github.com/YKiselev/binary-format.git</connection>
         <developerConnection>scm:git:git@github.com:YKiselev/binary-format.git</developerConnection>
         <url>http://github.com/YKiselev/binary-format/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>binary-format-1.27</tag>
     </scm>
 
     <properties>

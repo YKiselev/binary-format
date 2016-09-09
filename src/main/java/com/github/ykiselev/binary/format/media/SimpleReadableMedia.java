@@ -60,7 +60,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     }
 
     /**
-     * Reads packed positive integer (1-4 bytes)
+     * Reads packed positive integer (1-5 bytes)
      *
      * @return the length (positive integer)
      */
@@ -69,13 +69,13 @@ public final class SimpleReadableMedia implements ReadableMedia {
     }
 
     /**
-     * Reads packed positive integer (1-4 bytes)
+     * Reads packed positive integer (1-5 bytes)
      *
      * @return the length (positive integer)
      */
     private int readLength(BinaryOutput output) throws IOException {
         int result = 0;
-        for (int i = 0, shift = 0, b = read(); i < 4; i++, shift += 7, b = read()) {
+        for (int i = 0, shift = 0, b = read(); i < 5; i++, shift += 7, b = read()) {
             result += b << shift;
             output.write(b);
             if ((b & 0x80) == 0) {

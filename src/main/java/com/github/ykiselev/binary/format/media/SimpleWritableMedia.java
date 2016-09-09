@@ -51,7 +51,7 @@ public final class SimpleWritableMedia implements WritableMedia {
     /**
      * Store packed <b>positive</b> integer.
      * <p>
-     * Stores value as 1-4 bytes depending on magnitude
+     * Stores value as 1-5 bytes depending on magnitude
      *
      * @param length the value to store. Must be positive.
      */
@@ -59,19 +59,8 @@ public final class SimpleWritableMedia implements WritableMedia {
         if (length < 0) {
             throw new IllegalArgumentException("Length must be positive: " + length);
         }
-        int l = length;
-        write(l & 0xff);
-        l >>>= 7;
-        if (l != 0) {
+        for (int l = length; l > 0; l >>>= 7) {
             write(l & 0xff);
-            l >>>= 7;
-            if (l != 0) {
-                write(l & 0xff);
-                l >>>= 7;
-                if (l != 0) {
-                    write(l & 0xff);
-                }
-            }
         }
     }
 
@@ -107,18 +96,6 @@ public final class SimpleWritableMedia implements WritableMedia {
     private void writeType(byte type) throws IOException {
         write(type);
     }
-
-//    private void writeType(byte type, byte subType) throws IOException {
-//        final int t = type & Types.MASK;
-//        final int st = subType & Types.MASK;
-//        if (t != type) {
-//            throw new IllegalArgumentException("Subtype in type value: " + type);
-//        }
-//        if (st != subType) {
-//            throw new IllegalArgumentException("Type in subtype value: " + subType);
-//        }
-//        this.out.write(t + (subType << 4));
-//    }
 
     @Override
     public void writeString(String value) throws IOException {
@@ -316,7 +293,7 @@ public final class SimpleWritableMedia implements WritableMedia {
     }
 
     @Override
-    public void writeRest(byte[] blob) throws IOException {
-        throw new UnsupportedOperationException("not implemented");
+    public void writeRest(byte[] blob, int count) throws IOException {
+        write(blob, 0, count);
     }
 }

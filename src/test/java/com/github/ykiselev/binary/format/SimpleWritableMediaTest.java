@@ -53,7 +53,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintByte() throws Exception {
+    public void shouldWriteByte() throws Exception {
         this.media.writeByte((byte) 127);
         assertArrayEquals(new byte[]{
                 Types.BYTE, 127
@@ -61,7 +61,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintChar() throws Exception {
+    public void shouldWriteChar() throws Exception {
         this.media.writeChar((char) 0xfff);
         assertArrayEquals(new byte[]{
                 Types.CHAR, (byte) 0xff, 0x0f
@@ -69,7 +69,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintShort() throws Exception {
+    public void shouldWriteShort() throws Exception {
         this.media.writeShort((short) 0xfff);
         assertArrayEquals(new byte[]{
                 Types.SHORT, (byte) 0xff, 0x0f
@@ -77,7 +77,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintInt() throws Exception {
+    public void shouldWriteInt() throws Exception {
         this.media.writeInt(0xfffff);
         assertArrayEquals(new byte[]{
                 Types.INT, -1, -1, 15, 0
@@ -85,7 +85,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintLong() throws Exception {
+    public void shouldWriteLong() throws Exception {
         this.media.writeLong(0xfffffffffL);
         assertArrayEquals(new byte[]{
                 Types.LONG, -1, -1, -1, -1, 15, 0, 0, 0
@@ -93,7 +93,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintString() throws Exception {
+    public void shouldWriteString() throws Exception {
         this.media.writeString("Превед, Медвежуть!");
         assertArrayEquals(new byte[]{
                 Types.STRING, 33,
@@ -123,6 +123,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 5, 'a', 'l', 'p', 'h', 'a',
                         Types.FLOAT, -61, -11, 72, 64,
                         Types.DOUBLE, 31, -123, -21, 81, -72, 30, 9, 64,
+                        Types.SHORT, (byte) 0xff, (byte)0xff,
                         Types.END_MARKER,
                         Types.NULL,
                         Types.BYTE, -1,
@@ -132,6 +133,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 8, -48, -79, -48, -75, -47, -126, -48, -80,
                         Types.FLOAT, 1, 27, 55, 74,
                         Types.DOUBLE, -10, 8, 0, 46, 89, 118, 81, 66,
+                        Types.SHORT, (byte) 0xff, (byte)0xff,
                         Types.END_MARKER
 
                 },
@@ -140,7 +142,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintBytes() throws Exception {
+    public void shouldWriteBytes() throws Exception {
         final byte[] src = {1, 2, 3, 4, 5, 6, 7, 8, 9, 100, Byte.MIN_VALUE, Byte.MAX_VALUE};
         this.media.writeByteArray(src);
         final byte[] header = new byte[]{
@@ -151,7 +153,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintChars() throws Exception {
+    public void shouldWriteChars() throws Exception {
         final char[] src = {'A', 'B', 'C', Character.MIN_VALUE, Character.MAX_VALUE};
         this.media.writeCharArray(src);
         final byte[] expected = new byte[]{
@@ -167,7 +169,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintShorts() throws Exception {
+    public void shouldWriteShorts() throws Exception {
         final short[] src = {1, 2, 3, Short.MIN_VALUE, Short.MAX_VALUE};
         this.media.writeShortArray(src);
         final byte[] expected = new byte[]{
@@ -183,7 +185,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintInts() throws Exception {
+    public void shouldWriteInts() throws Exception {
         final int[] src = {1, 2, 3, Integer.MIN_VALUE, Integer.MAX_VALUE};
         this.media.writeIntArray(src);
         final byte[] expected = new byte[]{
@@ -199,7 +201,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintLongs() throws Exception {
+    public void shouldWriteLongs() throws Exception {
         final long[] src = {1, 2, 3, Long.MIN_VALUE, Long.MAX_VALUE};
         this.media.writeLongArray(src);
         final byte[] expected = new byte[]{
@@ -215,7 +217,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintFloats() throws Exception {
+    public void shouldWriteFloats() throws Exception {
         final float[] src = {1f, 2f, 3f, Float.MIN_VALUE, Float.MAX_VALUE};
         this.media.writeFloatArray(src);
         final byte[] expected = new byte[]{
@@ -231,7 +233,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintDouble() throws Exception {
+    public void shouldWriteDouble() throws Exception {
         final double[] src = {1f, 2f, 3f, Double.MIN_VALUE, Double.MAX_VALUE};
         this.media.writeDoubleArray(src);
         final byte[] expected = new byte[]{
@@ -247,7 +249,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldPrintObject() throws Exception {
+    public void shouldWriteObject() throws Exception {
         this.media.writeObject(new Item(Byte.MAX_VALUE, Short.MAX_VALUE, 1, 2L, "name", 1f, 2.0));
         assertArrayEquals(
                 new byte[]{
@@ -259,6 +261,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 4, 'n', 'a', 'm', 'e',
                         Types.FLOAT, 0, 0, -128, 63,
                         Types.DOUBLE, 0, 0, 0, 0, 0, 0, 0, 64,
+                        Types.SHORT, (byte) 0xff, (byte)0xff,
                         Types.END_MARKER
                 },
                 this.bos.toByteArray()
@@ -292,7 +295,7 @@ class Item {
         this.d = d;
     }
 
-    public void print(WritableMedia media) throws IOException {
+    void print(WritableMedia media) throws IOException {
         media.writeByte(this.b);
         media.writeShort(this.s);
         media.writeInt(this.id);
@@ -300,5 +303,6 @@ class Item {
         media.writeString(this.name);
         media.writeFloat(this.f);
         media.writeDouble(this.d);
+        media.writeRest(new byte[]{Types.SHORT, (byte) 0xff, (byte)0xff}, 3);
     }
 }

@@ -59,6 +59,6 @@ public interface WritableMedia {
 
     <T> void writeObjectArray(T[] value) throws IOException;
 
-    void writeRest(byte[] blob) throws IOException;
+    void writeRest(byte[] blob, int count) throws IOException;
 
 }

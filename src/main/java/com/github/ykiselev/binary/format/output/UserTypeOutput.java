@@ -25,6 +25,14 @@ import java.io.IOException;
  */
 public interface UserTypeOutput {
 
+    /**
+     * This method is called by {@link WritableMedia} to serialize user type
+     *
+     * @param media target media to serialize to
+     * @param value the value to serialize (always not {@code null}!)
+     * @param <T>   the user type
+     * @throws IOException if I/O error occurred.
+     */
     <T> void write(WritableMedia media, T value) throws IOException;
 
 }

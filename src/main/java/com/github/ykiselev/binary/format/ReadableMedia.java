@@ -27,6 +27,13 @@ import java.io.IOException;
  */
 public interface ReadableMedia {
 
+    /**
+     * Reads packed positive integer (1-5 bytes)
+     *
+     * @return the length (positive integer)
+     */
+    int readPackedInteger() throws IOException;
+
     String readString() throws IOException;
 
     byte readByte() throws IOException;

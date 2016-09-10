@@ -16,11 +16,11 @@
 
 package com.github.ykiselev.binary.format;
 
-import com.github.ykiselev.binary.format.input.UserTypeInput;
-import com.github.ykiselev.binary.format.input.InputStreamBinaryInput;
-import com.github.ykiselev.binary.format.output.OutputStreamBinaryOutput;
 import com.github.ykiselev.binary.format.buffers.SimpleArrayFactory;
+import com.github.ykiselev.binary.format.input.InputStreamBinaryInput;
+import com.github.ykiselev.binary.format.input.UserTypeInput;
 import com.github.ykiselev.binary.format.media.SimpleReadableMedia;
+import com.github.ykiselev.binary.format.output.OutputStreamBinaryOutput;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -110,6 +110,30 @@ public class SimpleReadableMediaTest {
                                 -48, -79, -48, -66, -48, -70, 33
                         }
                 ).readString()
+        );
+    }
+
+    @Test
+    public void shouldReadPackedInteger() throws Exception {
+        assertEquals(
+                123,
+                media(new byte[]{123}).readPackedInteger()
+        );
+        assertEquals(
+                1234,
+                media(new byte[]{(byte) 210, 9}).readPackedInteger()
+        );
+        assertEquals(
+                123456,
+                media(new byte[]{(byte) 192, (byte) 196, 7}).readPackedInteger()
+        );
+        assertEquals(
+                12345678,
+                media(new byte[]{(byte) 206, (byte) 194, (byte) 241, 5}).readPackedInteger()
+        );
+        assertEquals(
+                Integer.MAX_VALUE,
+                media(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, 7}).readPackedInteger()
         );
     }
 

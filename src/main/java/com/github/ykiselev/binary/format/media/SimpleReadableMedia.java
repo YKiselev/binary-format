@@ -61,13 +61,9 @@ public final class SimpleReadableMedia implements ReadableMedia {
         this.input.read(buffer, length);
     }
 
-    /**
-     * Reads packed positive integer (1-5 bytes)
-     *
-     * @return the length (positive integer)
-     */
-    private int readLength() throws IOException {
-        return readLength(NoOpBinaryOutput.INSTANCE);
+    @Override
+    public int readPackedInteger() throws IOException {
+        return readPackedInteger(NoOpBinaryOutput.INSTANCE);
     }
 
     /**
@@ -75,10 +71,11 @@ public final class SimpleReadableMedia implements ReadableMedia {
      *
      * @return the length (positive integer)
      */
-    private int readLength(BinaryOutput output) throws IOException {
+    private int readPackedInteger(BinaryOutput output) throws IOException {
         int result = 0;
-        for (int i = 0, shift = 0, b = read(); i < 5; i++, shift += 7, b = read()) {
-            result += b << shift;
+        for (int i = 0, shift = 0; i < 5; i++, shift += 7) {
+            final int b = read();
+            result += (b & 0x7f) << shift;
             output.write(b);
             if ((b & 0x80) == 0) {
                 break;
@@ -115,7 +112,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
         if (type == Types.NULL) {
             result = null;
         } else if (type == Types.STRING) {
-            final int length = readLength();
+            final int length = readPackedInteger();
             if (length == 0) {
                 result = "";
             } else {
@@ -274,7 +271,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public byte[] readByteArray() throws IOException {
         ensureArray(read(), Types.BYTE);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final byte[] result = new byte[length];
         read(result, length);
         return result;
@@ -283,7 +280,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public char[] readCharArray() throws IOException {
         ensureArray(read(), Types.CHAR);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final char[] result = new char[length];
         for (int i = 0; i < length; i++) {
             result[i] = (char) readInt16();
@@ -294,7 +291,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public short[] readShortArray() throws IOException {
         ensureArray(read(), Types.SHORT);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final short[] result = new short[length];
         for (int i = 0; i < length; i++) {
             result[i] = readInt16();
@@ -305,7 +302,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public int[] readIntArray() throws IOException {
         ensureArray(read(), Types.INT);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final int[] result = new int[length];
         for (int i = 0; i < length; i++) {
             result[i] = readInt32();
@@ -316,7 +313,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public long[] readLongArray() throws IOException {
         ensureArray(read(), Types.LONG);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final long[] result = new long[length];
         for (int i = 0; i < length; i++) {
             result[i] = readInt64();
@@ -327,7 +324,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public float[] readFloatArray() throws IOException {
         ensureArray(read(), Types.FLOAT);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final float[] result = new float[length];
         for (int i = 0; i < length; i++) {
             result[i] = readFloat32();
@@ -338,7 +335,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public double[] readDoubleArray() throws IOException {
         ensureArray(read(), Types.DOUBLE);
-        final int length = readLength();
+        final int length = readPackedInteger();
         final double[] result = new double[length];
         for (int i = 0; i < length; i++) {
             result[i] = readFloat64();
@@ -349,7 +346,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     @Override
     public <T> T[] readObjectArray(Class<T> itemType) throws IOException {
         ensureArray(read(), Types.USER_TYPE);
-        final int length = readLength();
+        final int length = readPackedInteger();
         @SuppressWarnings("unchecked")
         final T[] result = (T[]) Array.newInstance(itemType, length);
         for (int i = 0; i < length; i++) {
@@ -414,7 +411,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
                     break;
 
                 case Types.STRING:
-                    copy(readLength(output));
+                    copy(readPackedInteger(output));
                     break;
 
                 case Types.BYTE:
@@ -440,7 +437,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
                 default:
                     if (Types.isArray(type)) {
                         final int subType = Types.subType(type);
-                        final int length = readLength(output);
+                        final int length = readPackedInteger(output);
                         switch (subType) {
                             case Types.BYTE:
                                 copy(length);

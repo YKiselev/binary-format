@@ -48,19 +48,20 @@ public final class SimpleWritableMedia implements WritableMedia {
         this.out.write(data, offset, length);
     }
 
-    /**
-     * Store packed <b>positive</b> integer.
-     * <p>
-     * Stores value as 1-5 bytes depending on magnitude
-     *
-     * @param length the value to store. Must be positive.
-     */
-    private void writeLength(int length) throws IOException {
-        if (length < 0) {
-            throw new IllegalArgumentException("Length must be positive: " + length);
+    @Override
+    public void writePackedInteger(int value) throws IOException {
+        if (value < 0) {
+            throw new IllegalArgumentException("Length must be positive: " + value);
         }
-        for (int l = length; l > 0; l >>>= 7) {
-            write(l & 0xff);
+        for (; ; ) {
+            final int bits = value & 0x7f;
+            value >>>= 7;
+            if (value > 0) {
+                write(bits | 0x80);
+            } else {
+                write(bits);
+                break;
+            }
         }
     }
 
@@ -104,10 +105,10 @@ public final class SimpleWritableMedia implements WritableMedia {
         } else {
             writeType(Types.STRING);
             if (value.length() == 0) {
-                writeLength(0);
+                writePackedInteger(0);
             } else {
                 final byte[] bytes = value.getBytes(UTF_8);
-                writeLength(bytes.length);
+                writePackedInteger(bytes.length);
                 write(bytes, 0, bytes.length);
             }
         }
@@ -196,7 +197,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.BYTE));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             write(value, 0, value.length);
         }
     }
@@ -207,7 +208,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.CHAR));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (char s : value) {
                 writeInt16((short) s);
             }
@@ -220,7 +221,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.SHORT));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (short s : value) {
                 writeInt16(s);
             }
@@ -233,7 +234,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.INT));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (int i : value) {
                 writeInt32(i);
             }
@@ -246,7 +247,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.LONG));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (long l : value) {
                 writeInt64(l);
             }
@@ -259,7 +260,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.FLOAT));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (float f : value) {
                 writeFloat32(f);
             }
@@ -272,7 +273,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.DOUBLE));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (double d : value) {
                 writeFloat64(d);
             }
@@ -285,7 +286,7 @@ public final class SimpleWritableMedia implements WritableMedia {
             writeNull();
         } else {
             writeType(Types.array(Types.USER_TYPE));
-            writeLength(value.length);
+            writePackedInteger(value.length);
             for (T item : value) {
                 writeValue(item);
             }

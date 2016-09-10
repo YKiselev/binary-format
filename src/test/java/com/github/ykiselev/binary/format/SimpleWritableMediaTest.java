@@ -16,8 +16,8 @@
 
 package com.github.ykiselev.binary.format;
 
-import com.github.ykiselev.binary.format.output.OutputStreamBinaryOutput;
 import com.github.ykiselev.binary.format.media.SimpleWritableMedia;
+import com.github.ykiselev.binary.format.output.OutputStreamBinaryOutput;
 import com.github.ykiselev.binary.format.output.UserTypeOutput;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
@@ -123,7 +123,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 5, 'a', 'l', 'p', 'h', 'a',
                         Types.FLOAT, -61, -11, 72, 64,
                         Types.DOUBLE, 31, -123, -21, 81, -72, 30, 9, 64,
-                        Types.SHORT, (byte) 0xff, (byte)0xff,
+                        Types.SHORT, (byte) 0xff, (byte) 0xff,
                         Types.END_MARKER,
                         Types.NULL,
                         Types.BYTE, -1,
@@ -133,7 +133,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 8, -48, -79, -48, -75, -47, -126, -48, -80,
                         Types.FLOAT, 1, 27, 55, 74,
                         Types.DOUBLE, -10, 8, 0, 46, 89, 118, 81, 66,
-                        Types.SHORT, (byte) 0xff, (byte)0xff,
+                        Types.SHORT, (byte) 0xff, (byte) 0xff,
                         Types.END_MARKER
 
                 },
@@ -150,6 +150,29 @@ public class SimpleWritableMediaTest {
                 12
         };
         assertArrayEquals(ArrayUtils.addAll(header, src), this.bos.toByteArray());
+    }
+
+    @Test
+    public void shouldWritePackedInteger() throws Exception {
+        this.bos.reset();
+        this.media.writePackedInteger(123);
+        assertArrayEquals(new byte[]{123}, this.bos.toByteArray());
+
+        this.bos.reset();
+        this.media.writePackedInteger(1234);
+        assertArrayEquals(new byte[]{(byte) 210, 9}, this.bos.toByteArray());
+
+        this.bos.reset();
+        this.media.writePackedInteger(123456);
+        assertArrayEquals(new byte[]{(byte) 192, (byte) 196, 7}, this.bos.toByteArray());
+
+        this.bos.reset();
+        this.media.writePackedInteger(12345678);
+        assertArrayEquals(new byte[]{(byte) 206, (byte) 194, (byte) 241, 5}, this.bos.toByteArray());
+
+        this.bos.reset();
+        this.media.writePackedInteger(Integer.MAX_VALUE);
+        assertArrayEquals(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, 7}, this.bos.toByteArray());
     }
 
     @Test
@@ -261,7 +284,7 @@ public class SimpleWritableMediaTest {
                         Types.STRING, 4, 'n', 'a', 'm', 'e',
                         Types.FLOAT, 0, 0, -128, 63,
                         Types.DOUBLE, 0, 0, 0, 0, 0, 0, 0, 64,
-                        Types.SHORT, (byte) 0xff, (byte)0xff,
+                        Types.SHORT, (byte) 0xff, (byte) 0xff,
                         Types.END_MARKER
                 },
                 this.bos.toByteArray()
@@ -303,6 +326,6 @@ class Item {
         media.writeString(this.name);
         media.writeFloat(this.f);
         media.writeDouble(this.d);
-        media.writeRest(new byte[]{Types.SHORT, (byte) 0xff, (byte)0xff}, 3);
+        media.writeRest(new byte[]{Types.SHORT, (byte) 0xff, (byte) 0xff}, 3);
     }
 }

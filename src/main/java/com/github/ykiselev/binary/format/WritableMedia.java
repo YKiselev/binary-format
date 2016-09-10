@@ -20,10 +20,18 @@ import java.io.IOException;
 
 /**
  * Writable media
- *
+ * <p>
  * Created by Y.Kiselev on 20.06.2016.
  */
 public interface WritableMedia {
+
+    /**
+     * Stores <b>positive</b> integer as a variable length (1-5) sequence of bytes.
+     *
+     * @param value the value to store. Must be positive.
+     * @throws IOException if I/O error occurred.
+     */
+    void writePackedInteger(int value) throws IOException;
 
     void writeString(String value) throws IOException;
 
@@ -59,6 +67,14 @@ public interface WritableMedia {
 
     <T> void writeObjectArray(T[] value) throws IOException;
 
+    /**
+     * Writes byte blob of unknown data from next versions of model.
+     * If used, this method should be called after all the <i>known</i> fields of user type are written.
+     *
+     * @param blob  the data to write
+     * @param count the actual length of data in supplied blob
+     * @throws IOException if I/O error occurred.
+     */
     void writeRest(byte[] blob, int count) throws IOException;
 
 }

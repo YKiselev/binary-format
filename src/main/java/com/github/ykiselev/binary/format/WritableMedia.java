@@ -49,6 +49,8 @@ public interface WritableMedia {
 
     void writeDouble(double value) throws IOException;
 
+    void writeBoolean(boolean value) throws IOException;
+
     <T> void writeObject(T value) throws IOException;
 
     void writeByteArray(byte[] value) throws IOException;

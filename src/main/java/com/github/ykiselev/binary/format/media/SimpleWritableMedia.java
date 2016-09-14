@@ -121,6 +121,11 @@ public final class SimpleWritableMedia implements WritableMedia {
     }
 
     @Override
+    public void writeBoolean(boolean value) throws IOException {
+        write(Types.BOOLEAN + (value ? 1 << 4 : 0));
+    }
+
+    @Override
     public void writeChar(char value) throws IOException {
         if (value <= Byte.MAX_VALUE) {
             writeByte((byte) value);

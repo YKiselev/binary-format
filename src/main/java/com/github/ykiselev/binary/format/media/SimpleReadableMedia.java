@@ -136,6 +136,15 @@ public final class SimpleReadableMedia implements ReadableMedia {
     }
 
     @Override
+    public boolean readBoolean() throws IOException {
+        final int type = read();
+        if ((type & Types.MASK) != Types.BOOLEAN) {
+            throw new IOException("Not a boolean: " + type);
+        }
+        return (type & 0x08) != 0;
+    }
+
+    @Override
     public char readChar() throws IOException {
         final char result;
         final int type = read();

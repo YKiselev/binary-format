@@ -61,6 +61,15 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
+    public void shouldWriteBoolean() throws Exception {
+        this.media.writeBoolean(false);
+        this.media.writeBoolean(true);
+        assertArrayEquals(new byte[]{
+                Types.BOOLEAN, Types.BOOLEAN + (1 << 4)
+        }, this.bos.toByteArray());
+    }
+
+    @Test
     public void shouldWriteChar() throws Exception {
         this.media.writeChar((char) 0xfff);
         assertArrayEquals(new byte[]{

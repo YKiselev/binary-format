@@ -73,7 +73,7 @@ public final class Types {
     public static final byte STRING = 8;
 
     /**
-     * TYPE(low four bits), ELEMENT_TYPE(high four bits), LENGTH_IN_ELEMENTS(1-4b), VALUE(n)
+     * TYPE(bits 0-3), ELEMENT_TYPE(bits 4-7), LENGTH_IN_ELEMENTS(1-4b), VALUE(n)
      */
     public static final byte ARRAY = 9;
 
@@ -83,7 +83,7 @@ public final class Types {
     public static final byte NULL = 10;
 
     /**
-     * TYPE(1b), 0..N * (TYPE(1b), VALUE(f(type))), END_MARKER
+     * TYPE(1b), 0..N * ( TYPE(1b), VALUE( f(type) ) ), END_MARKER
      */
     public static final byte USER_TYPE = 11;
 
@@ -91,6 +91,11 @@ public final class Types {
      * TYPE(1b)
      */
     public static final byte END_MARKER = 12;
+
+    /**
+     * TYPE(bits 0-3) VALUE(bit 4) RESERVED(bits 5-7)
+     */
+    public static final byte BOOLEAN = 13;
 
     /**
      * Checks if supplied type is an array
@@ -124,5 +129,4 @@ public final class Types {
         }
         return (byte) (Types.ARRAY + (itemType << 4));
     }
-
 }

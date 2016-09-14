@@ -28,8 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by Y.Kiselev on 29.06.2016.
@@ -65,6 +64,11 @@ public class SimpleReadableMediaTest {
     @Test
     public void shouldReadByte() throws Exception {
         assertEquals(4, media(new byte[]{Types.BYTE, 4}).readByte());
+    }
+
+    @Test
+    public void shouldReadBoolean() throws Exception {
+        assertTrue(media(new byte[]{Types.BOOLEAN + (1 << 4)}).readBoolean());
     }
 
     @Test

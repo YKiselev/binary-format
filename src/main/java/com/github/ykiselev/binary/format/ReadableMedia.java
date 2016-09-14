@@ -50,6 +50,8 @@ public interface ReadableMedia {
 
     double readDouble() throws IOException;
 
+    boolean readBoolean() throws IOException;
+
     <T> T readObject(Class<T> type) throws IOException;
 
     byte[] readByteArray() throws IOException;

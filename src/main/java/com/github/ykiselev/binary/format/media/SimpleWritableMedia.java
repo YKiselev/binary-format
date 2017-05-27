@@ -177,7 +177,7 @@ public final class SimpleWritableMedia implements WritableMedia {
         writeFloat64(value);
     }
 
-    private <T> void writeValue(T value) throws IOException {
+    private void writeValue(Object value) throws IOException {
         if (value == null) {
             writeNull();
         } else {

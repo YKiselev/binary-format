@@ -93,12 +93,12 @@ public class SimpleReadableMediaTest {
 
     @Test
     public void shouldReadFloat() throws Exception {
-        assertEquals(3.14f, media(new byte[]{Types.FLOAT, -61, -11, 72, 64}).readFloat(), 0.001f);
+        assertEquals(3.14f, media(new byte[]{Types.FLOAT, -61, -11, 72, 64}).readFloat(), 0.0001f);
     }
 
     @Test
     public void shouldReadDouble() throws Exception {
-        assertEquals(3.14, media(new byte[]{Types.DOUBLE, 31, -123, -21, 81, -72, 30, 9, 64}).readDouble(), 0.001);
+        assertEquals(Math.PI, media(new byte[]{Types.DOUBLE, 24, 45, 68, 84, -5, 33, 9, 64}).readDouble(), 0.000001);
     }
 
     @Test

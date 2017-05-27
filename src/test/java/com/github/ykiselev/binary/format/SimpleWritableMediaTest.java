@@ -38,7 +38,7 @@ public class SimpleWritableMediaTest {
             new OutputStreamBinaryOutput(bos),
             new UserTypeOutput() {
                 @Override
-                public <T> void write(WritableMedia media, T value) throws IOException {
+                public void write(WritableMedia media, Object value) throws IOException {
                     if (value instanceof Item) {
                         ((Item) value).print(media);
                     } else {
@@ -98,6 +98,22 @@ public class SimpleWritableMediaTest {
         this.media.writeLong(0xfffffffffL);
         assertArrayEquals(new byte[]{
                 Types.LONG, -1, -1, -1, -1, 15, 0, 0, 0
+        }, this.bos.toByteArray());
+    }
+
+    @Test
+    public void shouldWriteFloat() throws Exception {
+        this.media.writeFloat((float) Math.PI);
+        assertArrayEquals(new byte[]{
+                Types.FLOAT, -37, 15, 73, 64
+        }, this.bos.toByteArray());
+    }
+
+    @Test
+    public void shouldWriteDouble() throws Exception {
+        this.media.writeDouble(Math.PI);
+        assertArrayEquals(new byte[]{
+                Types.DOUBLE, 24, 45, 68, 84, -5, 33, 9, 64
         }, this.bos.toByteArray());
     }
 
@@ -265,7 +281,7 @@ public class SimpleWritableMediaTest {
     }
 
     @Test
-    public void shouldWriteDouble() throws Exception {
+    public void shouldWriteDoubles() throws Exception {
         final double[] src = {1f, 2f, 3f, Double.MIN_VALUE, Double.MAX_VALUE};
         this.media.writeDoubleArray(src);
         final byte[] expected = new byte[]{

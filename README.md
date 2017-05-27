@@ -1,6 +1,9 @@
+[![Maven Central](https://img.shields.io/badge/binary--format-1.33-brightgreen.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.ykiselev%7Cbinary-format%7C1.33%7Cjar)
+[![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
 ## Synopsis
 
-This is a small library defining simple binary format for Java class serialization/deserialization. Out of the box primitive types (and arrays of primitive types) are supported, custom user class support can be added by plugging in serialization providers. To tailor different needs one can use custom user-type-to-de-serializer mapping modes - for example, storing integer as _userId_, String _className_ or without type information at all (this may be useful in cases when type of serialized instance always matches corresponding field type). 
+This is a small library defining simple binary format for Java class serialization/deserialization. Out of the box primitive types (and arrays of primitive types) are supported, custom user class support can be added by plugging in serialization providers. To tailor different needs one can use custom user-type-to-de-serializer mapping modes - for example, storing some _userTypeId_ or _className_ or even without any type information at all (this may be useful in cases when type of serialized instance always matches corresponding field type). 
 
 ## Code Example
 
@@ -72,7 +75,7 @@ byte[]{
 In general each value is stored as a pair (type,data) where type is single byte and data is a type-dependent array of bytes.  
 Lengths of arrays and strings are stored using variable length sequence of bytes, where only 7 lower bits of each byte is used, so if value fit 7 bits it will occupy one byte, if it fits 14 bits it will be two bytes and so on. This is because higher bit (8) when set is used as a marker "more data in next byte". For details see `org.uze.binary.format.media.SimpleWritableMedia.writeLength`.
 
-Now to de-serialization (again for simplicity only one user type supported)
+Now de-serialization (again for simplicity only one user type supported)
 ```java
         ReadableMedia media = return new SimpleReadableMedia(
                 new InputStreamBinaryInput(
@@ -97,7 +100,7 @@ Of course in real life implementors of `UserTypeOutput` and `UserTypeInput` will
 
 ## Motivation
 
-To stop re-inventing the weel in each new project of mine.
+Because I like it.
 
 ## Installation
 
@@ -106,7 +109,7 @@ For maven projects add dependency to pom.xml
 <dependency>
     <groupId>com.github.ykiselev</groupId>
     <artifactId>binary-format</artifactId>
-    <version>1.27</version>
+    <version>1.32</version>
 </dependency>
 ```
 
@@ -128,7 +131,7 @@ Please e-mail me if you need more info or want to improve something: uze@yandex.
 
 ## Downloads
 
-Download [the lates jar][dl] or
+Download [the latest jar][dl] or [snapshot][snap]
 
 ## License
 

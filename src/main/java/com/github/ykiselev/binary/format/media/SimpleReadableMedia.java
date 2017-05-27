@@ -89,12 +89,11 @@ public final class SimpleReadableMedia implements ReadableMedia {
     }
 
     private int readInt32() throws IOException {
-        return read() + (read() << 8) + (read() << 16) + (read() << 24);
+        return ((int) readInt16() & 0xffff) + (((int) readInt16() & 0xffff) << 16);
     }
 
     private long readInt64() throws IOException {
-        return (long) read() + ((long) read() << 8) + ((long) read() << 16) + ((long) read() << 24) +
-                ((long) read() << 32) + ((long) read() << 40) + ((long) read() << 48) + ((long) read() << 56);
+        return ((long) readInt32() & 0xffffffffL) + (((long) readInt32() & 0xffffffffL) << 32L);
     }
 
     private float readFloat32() throws IOException {
@@ -356,8 +355,7 @@ public final class SimpleReadableMedia implements ReadableMedia {
     public <T> T[] readObjectArray(Class<T> itemType) throws IOException {
         ensureArray(read(), Types.USER_TYPE);
         final int length = readPackedInteger();
-        @SuppressWarnings("unchecked")
-        final T[] result = (T[]) Array.newInstance(itemType, length);
+        @SuppressWarnings("unchecked") final T[] result = (T[]) Array.newInstance(itemType, length);
         for (int i = 0; i < length; i++) {
             result[i] = readObjectValue(itemType);
         }

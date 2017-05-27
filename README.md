@@ -104,12 +104,11 @@ Because I like it.
 
 ## Installation
 
-For maven projects add dependency to pom.xml
+For maven projects add this dependency to pom.xml (get the latest version [here][releases])
 ```xml
 <dependency>
     <groupId>com.github.ykiselev</groupId>
     <artifactId>binary-format</artifactId>
-    <version>1.34</version>
 </dependency>
 ```
 
@@ -131,12 +130,12 @@ Please e-mail me if you need more info or want to improve something: uze@yandex.
 
 ## Downloads
 
-Download [the latest jar][dl] or [snapshot][snap]
+Download [the latest jar][dl]
 
 ## License
 
 This library is licensed under the Apache License, Version 2.0.
 
 [dl]: https://search.maven.org/remote_content?g=com.github.ykiselev&a=binary-format&v=LATEST
-[snap]: https://oss.sonatype.org/content/repositories/snapshots/com/github/ykiselev/binary-format/
 [javadoc]: https://ykiselev.github.io/binary-format/1.x/
+[releases]: https://github.com/YKiselev/binary-format/releases

@@ -109,7 +109,7 @@ For maven projects add dependency to pom.xml
 <dependency>
     <groupId>com.github.ykiselev</groupId>
     <artifactId>binary-format</artifactId>
-    <version>1.32</version>
+    <version>1.33</version>
 </dependency>
 ```
 

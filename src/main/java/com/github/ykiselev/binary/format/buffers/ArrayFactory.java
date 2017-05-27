@@ -25,7 +25,7 @@ public interface ArrayFactory {
      * Provides array of bytes with required capacity. Actual length of returned array may be greater than {@code capacity}
      *
      * @param capacity the required size of array
-     * @return the byte array with length >= {@code capacity}
+     * @return the byte array with at least {@code capacity} length.
      */
     byte[] get(int capacity);
 }

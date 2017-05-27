@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/badge/binary--format-1.33-brightgreen.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.ykiselev%7Cbinary-format%7C1.33%7Cjar)
+[![Maven Central](https://img.shields.io/badge/binary--format-1.34-brightgreen.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.ykiselev%7Cbinary-format%7C1.34%7Cjar)
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Synopsis
@@ -109,7 +109,7 @@ For maven projects add dependency to pom.xml
 <dependency>
     <groupId>com.github.ykiselev</groupId>
     <artifactId>binary-format</artifactId>
-    <version>1.33</version>
+    <version>1.34</version>
 </dependency>
 ```
 
